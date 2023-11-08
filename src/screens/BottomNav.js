@@ -1,11 +1,14 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import HomeScreen from './HomeScreen';
+import CartScreen from './CartScreen';
 import AccountScreen from './AccountScreen';
-import SearchScreen from './SearchScreen';
+
+// import { HomeScreen, CartScreen, AccountScreen } from './index'
 import Icon, { Icons } from '../components/Icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-const Tab = createBottomTabNavigator();
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+const Tab = createMaterialBottomTabNavigator();
+
 const TabArr = [
     {
         route: 'Home',
@@ -13,30 +16,36 @@ const TabArr = [
         type: Icons.Ionicons,
         activeIcon: 'home',
         inActiveIcon: 'home-outline',
-        component: HomeScreen
+        component: HomeScreen,
+        tabBarColor: "#fbbf24"
     },
     {
-        route: 'Search',
-        label: 'Search',
+        route: 'Cart',
+        label: 'Cart',
         type: Icons.Ionicons,
-        activeIcon: 'search',
-        inActiveIcon: 'search-outline',
-        component: SearchScreen
+        activeIcon: 'cart',
+        inActiveIcon: 'cart-outline',
+        component: CartScreen,
+        tabBarColor: "#FF0000"
     },
     {
         route: 'Account',
         label: 'Account',
         type: Icons.FontAwesome,
-        activeIcon: 'user-circle',
-        inActiveIcon: 'user-circle-o',
-        component: AccountScreen
+        activeIcon: 'user',
+        inActiveIcon: 'user-o',
+        component: AccountScreen,
+        tabBarColor: "#00FF00"
     },
 ];
 
 
 export default function BottomNav() {
     return (
-        <Tab.Navigator initialRouteName='Home'>
+        <Tab.Navigator initialRouteName='Home'
+            activeColor='#65558f'
+            inactiveColor='#2c2929'
+        >
             {TabArr.map((tab) => (
                 <Tab.Screen
                     key={tab.route}
