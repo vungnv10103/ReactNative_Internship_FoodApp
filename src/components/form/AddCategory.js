@@ -101,7 +101,7 @@ export default function AddCategory({ visible, onClose, onSubmit }) {
                                 <TouchableOpacity
                                     className=" bg-sky-400  py-2 px-3 rounded-lg mb-3 "
                                     onPress={handleSubmit}>
-                                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sm  text-white text-center">Thêm mới</Text>
+                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm  text-white text-center">Thêm mới</Text>
                                 </TouchableOpacity>
                             </>}
                         </Animated.View>

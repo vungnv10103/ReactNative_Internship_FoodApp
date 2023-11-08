@@ -20,6 +20,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
     const [loading, isLoading] = useState(false)
     const [progress, setProgress] = useState(0)
     const [dataCate, setDataCate] = useState([])
+    const [showData, setShowData] = useState(true);
 
     const getDataCategory = () => {
         const dbRef = databaseRef(database, 'categories');
@@ -28,7 +29,6 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
             snapshot.forEach((childSnapshot) => {
                 const childKey = childSnapshot.key;
                 const childData = childSnapshot.val();
-                // console.log(childData);
                 dataFromFirebase.push(
                     {
                         key: childData.id,
@@ -36,9 +36,8 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                     }
                 );
             });
-            // const jsonData = JSON.stringify(dataFromFirebase, null, 2)
-            // console.log(jsonData);
             setDataCate(dataFromFirebase)
+
         }, {
             onlyOnce: false
         });
@@ -48,7 +47,8 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
     }, [])
 
     const clearForm = () => {
-        setDataCate(null)
+        // setDataCate(null)
+        setShowData(false);
         setSelected("")
         setNameProduct("")
         setDescription("")
@@ -116,18 +116,27 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
             <View style={styles.container}>
                 <View style={styles.dialog}>
                     <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black text-center text-2xl py-2">Thêm mới sản phẩm</Text>
-
-                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black py-1 mt-2">Thể loại</Text>
-                    <SelectList
-                        fontFamily='Inter-Medium'
-                        setSelected={(val) => setSelected(val)}
-                        data={dataCate}
-                        save="key"
-                        label="Categories"
-                        placeholder='Chọn thể loại'
-                        inputStyles={{ color: 'black' }}
-                        dropdownTextStyles={{ color: 'black' }}
-                    />
+                    {
+                        showData && dataCate.length > 0 ? (
+                            <View>
+                                <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black py-1 mt-2">Thể loại</Text>
+                                <SelectList
+                                    fontFamily='Inter-Medium'
+                                    setSelected={(val) => setSelected(val)}
+                                    data={dataCate}
+                                    save="key"
+                                    label="Categories"
+                                    placeholder='Chọn thể loại'
+                                    inputStyles={{ color: 'black' }}
+                                    dropdownTextStyles={{ color: 'black' }}
+                                />
+                            </View>
+                        ) : (
+                            <View>
+                                <Text style={{ fontFamily: 'Inter-Medium', color: 'red' }}>Error fetch data categories</Text>
+                            </View>
+                        )
+                    }
 
                     <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black py-1 mt-2 hidden">Mã sản phẩm</Text>
                     <TextInput
@@ -138,7 +147,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                         focusable={false}
                     />
 
-                    <Text className="text-black py-1 mt-2">Tên sản phẩm</Text>
+                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black py-1 mt-2">Tên sản phẩm</Text>
                     <TextInput
                         className="text-black p-3 rounded border-gray-300 border"
                         style={{ fontFamily: 'Inter-Medium' }}
@@ -146,7 +155,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                         onChangeText={(text) => setNameProduct(text)}
                     />
 
-                    <Text className="text-black py-1 mt-2">Mô tả</Text>
+                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black py-1 mt-2">Mô tả</Text>
                     <TextInput
                         className="text-black p-3 rounded border-gray-300 border"
                         style={{ fontFamily: 'Inter-Medium' }}
@@ -154,7 +163,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                         onChangeText={(text) => setDescription(text)}
                     />
 
-                    <Text className="text-black py-1 mt-2">Giá bán</Text>
+                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black py-1 mt-2">Giá bán</Text>
                     <TextInput
                         className="text-black p-3 rounded border-gray-300 border"
                         style={{ fontFamily: 'Inter-Medium' }}
@@ -184,7 +193,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                                 <TouchableOpacity
                                     className=" bg-sky-400  py-2 px-3 rounded-lg mb-3 "
                                     onPress={handleSubmit}>
-                                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sm text-white text-center">Thêm mới</Text>
+                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm text-white text-center">Thêm mới</Text>
                                 </TouchableOpacity>
                             </>}
                         </Animated.View>
