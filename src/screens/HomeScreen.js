@@ -1,28 +1,15 @@
 import { View, Text, TouchableOpacity, Image, StatusBar, ScrollView, TextInput, FlatList } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
-import ImagePicker from 'react-native-image-crop-picker';
-import { storage, database, auth } from '../config/FirebaseConfig';
-import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
-import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } from "firebase/storage";
-import uuid from 'react-native-uuid';
+import { database, auth } from '../config/FirebaseConfig';
+import { ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 import { onAuthStateChanged } from 'firebase/auth';
 import { BellIcon, MagnifyingGlassIcon, XCircleIcon } from "react-native-heroicons/outline"
 import { Categories, Restaurants, Products, ProductsSale } from '../components/index';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { AddCategory, AddProduct } from '../components/form/index';
-
 
 
 export default function HomeScreen() {
-
-    //  ADD
-    const [selectedImage, setSelectedImage] = useState(null);
-    const [selectedMedia, setSelectedMedia] = useState(null);
-    const [progress, setProgress] = useState(0)
-    const [isAddCategoryVisible, setAddCategoryVisible] = useState(false);
-    const [isAddProductVisible, setAddProductVisible] = useState(false);
-    // 
 
     const navigation = useNavigation();
 
@@ -38,8 +25,10 @@ export default function HomeScreen() {
     const getUserData = async () => {
         try {
             onAuthStateChanged(auth, (user) => {
-                setUser(user.displayName ? user.displayName : user.email)
-                setAvatar(user.photoURL ? user.photoURL : 'https://picsum.photos/200/300')
+                if (user != null) {
+                    setUser(user.displayName ? user.displayName : user.email)
+                    setAvatar(user.photoURL ? user.photoURL : 'https://picsum.photos/200/300')
+                }
             })
         } catch (error) {
             console.log("Error: " + error.message);
@@ -70,7 +59,7 @@ export default function HomeScreen() {
             snapshot.forEach((childSnapshot) => {
                 const childKey = childSnapshot.key;
                 const childData = childSnapshot.val();
-                if(childData.sale > 0){
+                if (childData.sale > 0) {
                     dataProductSale.push(childData)
                 }
                 dataProductFromFirebase.push(childData);
@@ -115,201 +104,12 @@ export default function HomeScreen() {
     }, [])
 
 
-
-    const customLogger = (message) => {
-        console.log(message);
-    }
-
-
-    const handleAddCategorySubmit = async (idCate, nameCate, imageSelected) => {
-        try {
-            const response = await fetch(imageSelected.uri);
-            const blob = await response.blob()
-            const fileName = `${uuid.v4()}.png`;
-            const mStorageRef = storageRef(storage, "images/" + fileName)
-            const uploadTask = uploadBytesResumable(mStorageRef, blob)
-            uploadTask.on("state_changed", (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                setProgress(progress.toFixed())
-            },
-                (error) => {
-                    // Handle error
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL) => {
-                        // save record
-                        console.log("File at: " + downLoadURL);
-                        setSelectedImage(downLoadURL);
-
-                        const dbRef = 'categories';
-                        const dataRef = databaseRef(database, dbRef);
-
-                        // get key
-                        const newDataRef = push(dataRef);
-                        const dataID = newDataRef.key;
-                        const newData = {
-                            id: dataID,
-                            name: nameCate,
-                            img: downLoadURL,
-                        };
-                        try {
-                            await runTransaction(dataRef, (currentData) => {
-                                if (!currentData) {
-                                    return [newData];
-                                } else {
-                                    currentData.push(newData);
-                                    return currentData;
-                                }
-                            });
-                            console.log('Thêm mới thành công!');
-                        } catch (error) {
-                            console.error('Thêm thất bại:', error);
-                        }
-                        setAddCategoryVisible(false)
-
-                    })
-                }
-            )
-        } catch (error) {
-            console.error('Error uploading image to Firebase Storage', error);
-        }
-    }
-
-    const handleAddProductSubmit = async (idCate, idProduct, nameProduct, desciption, price, imageSelected) => {
-        try {
-            const response = await fetch(imageSelected.uri);
-            const blob = await response.blob()
-            const fileName = `${uuid.v4()}.png`;
-            const mStorageRef = storageRef(storage, "images/" + fileName)
-            const uploadTask = uploadBytesResumable(mStorageRef, blob)
-            uploadTask.on("state_changed", (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                setProgress(progress.toFixed())
-            },
-                (error) => {
-                    // Handle error
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL) => {
-                        // save record
-                        console.log("File at: " + downLoadURL);
-                        setSelectedImage(downLoadURL);
-
-                        const dbRef = 'products';
-                        const dataRef = databaseRef(database, dbRef);
-
-                        // get key
-                        const newDataRef = push(dataRef);
-                        const dataID = newDataRef.key;
-                        const newData = {
-                            id: dataID,
-                            idCate: idCate,
-                            name: nameProduct,
-                            desciption: desciption,
-                            price: price,
-                            img: downLoadURL,
-                            sold: 0,
-                            status: 0,
-                            sale: 0
-                        };
-                        try {
-                            await runTransaction(dataRef, (currentData) => {
-                                if (!currentData) {
-                                    return [newData];
-                                } else {
-                                    currentData.push(newData);
-                                    return currentData;
-                                }
-                            });
-                            console.log('Thêm mới thành công!');
-                        } catch (error) {
-                            console.error('Thêm thất bại:', error);
-                        }
-                        setAddProductVisible(false)
-
-                    })
-                }
-            )
-        } catch (error) {
-            console.error('Error uploading image to Firebase Storage', error);
-        }
-    }
-
-
-    const handleVideoPicker = () => {
-        ImagePicker.openPicker({
-            mediaType: 'video', // Specify mediaType as 'video' to select videos
-            width: 300,
-            height: 400,
-        })
-            .then(async (media) => {
-                const selectedMedia = {
-                    uri: media.path,
-                    type: media.mime, // You can store the MIME type if needed
-                };
-                await uploadImageToFirebase(selectedMedia, "mp4");
-                // setSelectedMedia(selectedMedia);
-            })
-            .catch((error) => {
-                // Handle the error
-                console.log(error);
-            });
-    };
-
-    const handleImagePicker = () => {
-        ImagePicker.openPicker({
-
-            width: 300,
-            height: 400,
-            cropping: true,
-        }).then(async (image) => {
-            const selectedImage = { uri: image.path, fileName: image.filename };
-            await uploadImageToFirebase(selectedImage, "png");
-        }).catch(error => {
-            if (error.message !== "User cancelled image selection") {
-                customLogger(error.message);
-            }
-        });
-    };
-
-    const uploadImageToFirebase = async (selectedImage, typeFile) => {
-        try {
-            const response = await fetch(selectedImage.uri);
-            const blob = await response.blob()
-            const fileName = `${uuid.v4()}.${typeFile}`;
-            const dir = typeFile == "png" ? "images" : "videos"
-            const mStorageRef = storageRef(storage, `${dir}/` + fileName)
-            const uploadTask = uploadBytesResumable(mStorageRef, blob)
-            uploadTask.on("state_changed", (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-                setProgress(progress.toFixed())
-            },
-                (error) => {
-                    // Handle error
-                },
-                () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL) => {
-                        // save record
-                        console.log("File at: " + downLoadURL);
-                        if (typeFile == "png") {
-                            setSelectedImage(downLoadURL);
-                        }
-                        else {
-                            setSelectedMedia(downLoadURL)
-                        }
-                    })
-                }
-            )
-        } catch (error) {
-            console.error('Error uploading image to Firebase Storage', error);
-        }
-    }
-
     let searchClass = search.length > 0 ? " pr-[30px]" : ""
     return (
         <View className="flex-1 bg-gray-200">
             <StatusBar barStyle="light-content" />
             <ScrollView
+                showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 50 }}
                 className="space-y-6 pt-5"
             >
@@ -317,18 +117,18 @@ export default function HomeScreen() {
                 <View className="mx-3 flex-row justify-between items-center mb-1">
                     <TouchableOpacity
                         onPress={() => {
-                            setAddProductVisible(true)
+                            alert('Profile')
                         }}>
                         <Image
                             style={{ height: hp(5), width: hp(5), borderWidth: 0.5, borderColor: 'gray', borderRadius: 50, resizeMode: 'contain' }}
                             source={
-                                avatar ? { uri: avatar } : require('../assets/images/avatar.png')
+                                avatar ? { uri: avatar } : require('./../assets/images/avatar.png')
                             }
                         />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => {
-                            setAddCategoryVisible(true)
+                            alert('Notifications')
                         }}>
                         <BellIcon size={hp(4)} color="gray" />
                     </TouchableOpacity>
@@ -362,7 +162,7 @@ export default function HomeScreen() {
                             <TouchableOpacity
                                 onPress={() => {
                                     if (search.length > 0) {
-
+                                        alert(search)
                                     }
                                 }}
                             >
@@ -372,7 +172,7 @@ export default function HomeScreen() {
 
                     </View>
                     {
-                        search.length > 0 && <View className="bg-white rounded-full">
+                        search.length > 0 && <View className="rounded-full">
                             <TouchableOpacity
                                 onPress={() => {
                                     setSearch('')
@@ -400,16 +200,6 @@ export default function HomeScreen() {
                 <View>
                     <Products products={products} activeCategory={activeCategory} productsPopular={productsPopular} />
                 </View>
-                <AddCategory
-                    visible={isAddCategoryVisible}
-                    onClose={() => setAddCategoryVisible(false)}
-                    onSubmit={handleAddCategorySubmit}
-                />
-                <AddProduct
-                    visible={isAddProductVisible}
-                    onClose={() => setAddProductVisible(false)}
-                    onSubmit={handleAddProductSubmit}
-                />
             </ScrollView>
         </View>
     )

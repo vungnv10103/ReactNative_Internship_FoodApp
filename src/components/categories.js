@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Image } from 'react-native'
+import { Text, View, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Animated, { FadeInDown } from 'react-native-reanimated';
@@ -19,12 +19,12 @@ export default function Categories({ categories, activeCategory, handleChangeCat
                     >
                         {
                             categories.map((cate, index) => {
-                                let isActive = cate.id == activeCategory
-                                let activeButtonClass = isActive ? ' bg-amber-400' : ' bg-black/10'
+                                let isActive = cate.id == activeCategory.id
+                                let activeButtonClass = isActive ? ' bg-amber-400' : ' bg-white'
                                 return (
                                     <TouchableOpacity
                                         key={index}
-                                        onPress={() => handleChangeCategory(cate.id)}
+                                        onPress={() => handleChangeCategory(cate)}
                                         className="flex items-center space-y-1"
                                     >
                                         <View className={"rounded-full p-[5px]" + activeButtonClass}>

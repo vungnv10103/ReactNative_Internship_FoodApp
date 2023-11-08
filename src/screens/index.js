@@ -1,17 +1,18 @@
 import LoginScreen from "./LoginScreen";
 import SignupScreen from "./SignupScreen";
-import HomeScreen from "./HomeScreen";
-import DetailProduct from "./DetailProduct";
 import BottomNav from "./BottomNav";
+import HomeScreen from "./HomeScreen";
+import CartScreen from "./CartScreen";
 import AccountScreen from "./AccountScreen";
-import SearchScreen from "./SearchScreen";
+import DetailProduct from "./DetailProduct";
+
 
 export {
     LoginScreen,
     SignupScreen,
-    HomeScreen,
-    DetailProduct,
     BottomNav,
+    HomeScreen,
+    CartScreen,
+    DetailProduct,
     AccountScreen,
-    SearchScreen,
 }

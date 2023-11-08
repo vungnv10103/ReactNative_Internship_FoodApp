@@ -15,6 +15,7 @@ export default function SignupScreen() {
 
 
     function writeUserData(userId, name, email) {
+        isLoading(true);
         const db = getDatabase();
         set(ref(db, 'users/' + userId), {
             username: name,
@@ -22,12 +23,26 @@ export default function SignupScreen() {
         });
         navigation.reset({
             index: 0,
-            routes: [{ name: 'Home' }],
+            routes: [{ name: 'BottomNav' }],
         });
     }
 
     const sigup = async () => {
         isLoading(true);
+        if (password.length == 0) {
+            isLoading(false);
+            alert("Vui lòng điền password")
+            return
+        }
+        else if (username.length == 0) {
+            isLoading(false);
+            alert("Vui lòng điền username")
+            return
+        } else if (password.length == 0) {
+            isLoading(false);
+            alert("Vui lòng điền password")
+            return
+        }
         try {
             const response = await createUserWithEmailAndPassword(auth, email, password);
             if (response) {

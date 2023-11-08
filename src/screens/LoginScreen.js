@@ -5,10 +5,10 @@ import Animated, { useSharedValue, withSpring, FadeIn, FadeInDown, FadeInUp } fr
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { onAuthStateChanged } from 'firebase/auth';
-import { getAuth } from '../config/FirebaseConfig'
+import { auth } from '../config/FirebaseConfig'
+
 export default function LoginScreen() {
     const navigation = useNavigation();
-    const auth = getAuth();
     const [currentUser, setUser] = useState(null);
     const [email, setemail] = useState('')
     const [password, setPassword] = useState('')
@@ -17,7 +17,7 @@ export default function LoginScreen() {
 
     useEffect(() => {
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+            if (user != null) {
                 // const data = JSON.stringify(user, null, 2)
                 // console.log("current user: ", data);
                 setUser(user)
@@ -44,8 +44,7 @@ export default function LoginScreen() {
             const response = await signInWithEmailAndPassword(auth, email, password);
             let data = JSON.stringify(response, null, 2);
             const user = response.user;
-            if (user) {
-
+            if (user != null) {
                 navigation.reset({
                     index: 0,
                     routes: [{ name: 'BottomNav' }],
