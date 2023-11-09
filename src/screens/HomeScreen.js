@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, StatusBar, ScrollView, TextInput, FlatList } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StatusBar, ScrollView, TextInput, FlatList, RefreshControl } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { database, auth } from '../config/FirebaseConfig';
@@ -27,7 +27,7 @@ export default function HomeScreen() {
             onAuthStateChanged(auth, (user) => {
                 if (user != null) {
                     setUser(user.displayName ? user.displayName : user.email)
-                    setAvatar(user.photoURL ? user.photoURL : 'https://picsum.photos/200/300')
+                    setAvatar(user.photoURL ? user.photoURL : '')
                 }
             })
         } catch (error) {
@@ -96,12 +96,26 @@ export default function HomeScreen() {
         setActiveCategory(category)
     }
 
-    useEffect(() => {
-        getUserData();
+    const getDataHome = () => {
+        getUserData()
         getDataCategory()
         getDataProduct()
         getDataProductPopular()
+    }
+
+    useEffect(() => {
+        getDataHome()
     }, [])
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        getDataHome()
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 2000);
+    }, []);
 
 
     let searchClass = search.length > 0 ? " pr-[30px]" : ""
@@ -109,9 +123,12 @@ export default function HomeScreen() {
         <View className="flex-1 bg-gray-200">
             <StatusBar barStyle="light-content" />
             <ScrollView
+                className="space-y-6 pt-5"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 50 }}
-                className="space-y-6 pt-5"
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
             >
                 {/* Avatar $ Bell icon */}
                 <View className="mx-3 flex-row justify-between items-center mb-1">
@@ -122,7 +139,7 @@ export default function HomeScreen() {
                         <Image
                             style={{ height: hp(5), width: hp(5), borderWidth: 0.5, borderColor: 'gray', borderRadius: 50, resizeMode: 'contain' }}
                             source={
-                                avatar ? { uri: avatar } : require('./../assets/images/avatar.png')
+                                avatar ? { uri: avatar } : require('./../assets/images/avatar_man_1.png')
                             }
                         />
                     </TouchableOpacity>

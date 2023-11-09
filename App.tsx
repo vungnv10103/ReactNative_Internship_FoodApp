@@ -1,6 +1,7 @@
+import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { LoginScreen, SignupScreen, HomeScreen, DetailProduct, BottomNav, AccountScreen, CartScreen } from './src/screens/index'
+import { LoginScreen, SignupScreen, HomeScreen, DetailProduct, BottomNav, AccountScreen, CartScreen, ChatScreen } from './src/screens/index'
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -14,6 +15,7 @@ export default function App() {
         <Stack.Screen name='BottomNav' component={BottomNav} options={{ headerShown: false }} />
         <Stack.Screen name='Account' component={AccountScreen} options={{ headerShown: false }} />
         <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
+        <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

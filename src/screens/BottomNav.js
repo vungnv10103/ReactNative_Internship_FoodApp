@@ -43,16 +43,28 @@ const TabArr = [
 export default function BottomNav() {
     return (
         <Tab.Navigator initialRouteName='Home'
+            shifting={true}
+
+            // theme default
             activeColor='#65558f'
             inactiveColor='#2c2929'
+            barStyle={{ backgroundColor: '' }}
+
+        // matcha
+        // activeColor='#0e1f12'
+        // inactiveColor='#0e1f12'
+        // barStyle={{ backgroundColor: '#ebf1e6' }}
         >
             {TabArr.map((tab) => (
                 <Tab.Screen
                     key={tab.route}
                     name={tab.route}
                     component={tab.component}
+
                     options={{
                         headerShown: false,
+                        tabBarLabel: tab.label,
+
                         tabBarIcon: ({ focused, color, size }) => (
                             <Icon name={focused ? tab.activeIcon : tab.inActiveIcon} type={tab.type} color={color} size={size} />
                         ),

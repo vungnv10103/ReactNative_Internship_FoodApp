@@ -9,20 +9,24 @@ export default function ProductsSale({ productsSale }) {
     return (
         <View>
             {
-                productsSale.length > 0 ? (
-                    <View className="mx-4 space-y-4">
-                        <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Sales</Text>
-                        <FlatList
-                            horizontal={true}
-                            data={productsSale}
-                            keyExtractor={item => item.id}
-                            renderItem={({ item }) => <Item item={item} navigation={navigation} />}
-                        />
-                    </View>) : (<View>
-                        <Text>No data available</Text>
-                    </View>)
+                productsSale.length > 0 ?
+                    (
+                        <View className="mx-4 space-y-4">
+                            <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Sales</Text>
+                            <FlatList
+                                horizontal={true}
+                                data={productsSale}
+                                keyExtractor={item => item.id}
+                                renderItem={({ item }) => <Item item={item} navigation={navigation} />}
+                            />
+                        </View>
+                    ) :
+                    (
+                        <View>
+                            <Text className="text-black">No data available</Text>
+                        </View>
+                    )
             }
-
         </View>
     )
 }

@@ -9,13 +9,14 @@ import { useNavigation } from '@react-navigation/native';
 export default function Products({ activeCategory, products, productsPopular }) {
     const navigation = useNavigation()
     const { id, name } = activeCategory
+    // console.log(id, name);
     const dataProduct = products.filter(item => item.idCate === id);
     const [showLoading, setShowLoading] = useState(true);
 
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowLoading(false);
-        }, 3000);
+        }, 5000);
 
         return () => clearTimeout(timer);
     }, []);
@@ -23,10 +24,18 @@ export default function Products({ activeCategory, products, productsPopular }) 
 
     return (
         <View className="mx-4 space-y-4">
-            <Text style={{ fontSize: hp(3) }} className="font-semibold text-neutral-600">{name != null ? `Products » ${name}` : "Popular"}</Text>
+            {/* <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className="text-black">{name != null ? `Products » ${name}` : "Popular"}</Text> */}
+            <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold', color: 'black' }}>
+                Products
+                <Text style={{ fontFamily: 'Inter-Medium', fontSize: hp(2.8) }}> » </Text>
+                <Text style={{ fontFamily: 'Inter-Medium', fontSize: hp(2.6) }}>
+                    {name != null ? name : "Popular"}
+                </Text>
+            </Text>
+
             <View>
                 {showLoading ? (
-                    <Loading size="lagre" className="mt-20" />
+                    <Loading className="mt-20" />
                 ) : (
                     dataProduct.length == 0 ?
                         (
@@ -36,15 +45,18 @@ export default function Products({ activeCategory, products, productsPopular }) 
                                         <Text style={{ fontFamily: 'Inter-Medium', color: 'black' }}>No data available</Text>
                                     </View>
                                 ) :
-                                (<MasonryList
-                                    data={productsPopular}
-                                    keyExtractor={(item) => item.id}
-                                    numColumns={2}
-                                    showsVerticalScrollIndicator={false}
-                                    renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
-                                    onEndReachedThreshold={0.1}
-                                />)
-                        ) : (
+                                (
+                                    <MasonryList
+                                        data={productsPopular}
+                                        keyExtractor={(item) => item.id}
+                                        numColumns={2}
+                                        showsVerticalScrollIndicator={false}
+                                        renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
+                                        onEndReachedThreshold={0.1}
+                                    />
+                                )
+                        ) :
+                        (
                             <MasonryList
                                 data={dataProduct}
                                 keyExtractor={(item) => item.id}
@@ -53,7 +65,9 @@ export default function Products({ activeCategory, products, productsPopular }) 
                                 renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
                                 onEndReachedThreshold={0.1}
                             />
-                        ))}
+                        )
+                )
+                }
             </View>
         </View>
     )

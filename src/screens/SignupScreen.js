@@ -32,44 +32,45 @@ export default function SignupScreen() {
         if (password.length == 0) {
             isLoading(false);
             alert("Vui lòng điền password")
-            return
         }
         else if (username.length == 0) {
             isLoading(false);
             alert("Vui lòng điền username")
-            return
         } else if (password.length == 0) {
             isLoading(false);
             alert("Vui lòng điền password")
-            return
         }
-        try {
-            const response = await createUserWithEmailAndPassword(auth, email, password);
-            if (response) {
-                console.log(response);
-                const user = response.user;
-                writeUserData(user.uid, username, user.email)
-            }
+        else {
+            try {
+                const response = await createUserWithEmailAndPassword(auth, email, password);
+                if (response) {
+                    console.log(response);
+                    const user = response.user;
+                    writeUserData(user.uid, username, user.email)
+                }
 
-        } catch (error) {
-            const errorCode = error.code;
-            switch (errorCode) {
-                case 'auth/email-already-in-use':
-                    alert("Email đã được sử dụng \nVui lòng dùng email khác")
-                    break;
-                case 'auth/weak-password':
-                    alert("Mật khẩu tối thiểu 6 kí tự")
-                    break;
+            } catch (error) {
+                const errorCode = error.code;
+                switch (errorCode) {
+                    case 'auth/email-already-in-use':
+                        alert("Email đã được sử dụng \nVui lòng dùng email khác")
+                        break;
+                    case 'auth/weak-password':
+                        alert("Mật khẩu tối thiểu 6 kí tự")
+                        break;
 
-                default:
-                    alert('login failed: ' + error.message)
-                    break;
+                    default:
+                        alert('login failed: ' + error.message)
+                        break;
+                }
+                console.log(errorCode);
+            } finally {
+                isLoading(false);
             }
-            console.log(errorCode);
-        } finally {
-            isLoading(false);
         }
     }
+
+
     return (
         <View className="bg-white flex-1">
             <StatusBar barStyle="light-content" />

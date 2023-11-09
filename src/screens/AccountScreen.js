@@ -6,17 +6,39 @@ import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } 
 import Animated, { useSharedValue, withSpring, FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { AddCategory, AddProduct } from '../components/form/index';
 import uuid from 'react-native-uuid';
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native'
 
 
 
 export default function AccountScreen() {
     const navigation = useNavigation();
+
+    const [user, setUser] = useState('');
+    const [avatar, setAvatar] = useState('');
+
     const [selectedImage, setSelectedImage] = useState(null);
     const [progress, setProgress] = useState(0)
     const [isAddCategoryVisible, setAddCategoryVisible] = useState(false);
     const [isAddProductVisible, setAddProductVisible] = useState(false);
+
+
+    const getUserData = async () => {
+        try {
+            onAuthStateChanged(auth, (user) => {
+                if (user != null) {
+                    setUser(user.displayName ? user.displayName : user.email)
+                    setAvatar(user.photoURL ? user.photoURL : '')
+                }
+            })
+        } catch (error) {
+            console.log("Error: " + error.message);
+        }
+    }
+
+    useEffect(() => {
+        getUserData()
+    }, []);
 
 
     const handleAddCategorySubmit = async (idCate, nameCate, imageSelected) => {
@@ -150,6 +172,7 @@ export default function AccountScreen() {
             <StatusBar barStyle="light-content" />
             <View className="flex justify-around pt-20">
                 <View className="flex items-center mx-5 space-y-4 pt-20">
+                    <Text>{user}</Text>
                     <Animated.View
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>

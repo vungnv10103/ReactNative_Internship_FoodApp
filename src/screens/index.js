@@ -5,6 +5,7 @@ import HomeScreen from "./HomeScreen";
 import CartScreen from "./CartScreen";
 import AccountScreen from "./AccountScreen";
 import DetailProduct from "./DetailProduct";
+import ChatScreen from "./ChatScreen";
 
 
 export {
@@ -15,4 +16,5 @@ export {
     CartScreen,
     DetailProduct,
     AccountScreen,
+    ChatScreen,
 }

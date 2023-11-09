@@ -2,10 +2,11 @@ import { Text, View, StatusBar, SafeAreaView, TextInput, TouchableOpacity, Image
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import Animated, { useSharedValue, withSpring, FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
-import { signInWithEmailAndPassword } from 'firebase/auth'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../config/FirebaseConfig'
+import Loading from '../components/Loading';
+
 
 export default function LoginScreen() {
     const navigation = useNavigation();
@@ -15,61 +16,73 @@ export default function LoginScreen() {
     const [loading, isLoading] = useState(false)
 
 
-    useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user != null) {
-                // const data = JSON.stringify(user, null, 2)
-                // console.log("current user: ", data);
-                setUser(user)
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'BottomNav' }],
-                });
-            }
-        })
-    }, []);
+    const getUserData = async () => {
+        try {
+            onAuthStateChanged(auth, (user) => {
+                if (user != null) {
+                    setUser(user)
+                    const jsonData = JSON.stringify(user, null, 2)
+                    console.log(jsonData);
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'BottomNav' }],
+                    });
+                }
+                else {
+                    console.log("No login");
+                }
+            })
+        } catch (error) {
+            console.log("Error: " + error.message);
+        }
+    }
+
+    // useEffect(() => {
+    //     getUserData()
+    // }, []);
 
     const login = async () => {
         isLoading(true);
         if (email.length == 0) {
             isLoading(false);
             alert("Vui lòng điền email")
-            return
         } else if (password.length == 0) {
             isLoading(false);
             alert("Vui lòng điền password")
-            return
         }
-        try {
-            const response = await signInWithEmailAndPassword(auth, email, password);
-            let data = JSON.stringify(response, null, 2);
-            const user = response.user;
-            if (user != null) {
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'BottomNav' }],
-                });
-            }
-        } catch (error) {
-            const errorCode = error.code;
-            console.log(errorCode);
-            switch (errorCode) {
-                case "auth/missing-password":
-                    alert('Vui lòng điền mật khẩu')
-                    break;
-                case "auth/invalid-email":
-                    alert("Email không đúng định dạng")
-                    break;
+        else {
+            try {
+                const response = await signInWithEmailAndPassword(auth, email, password);
+                let data = JSON.stringify(response, null, 2);
+                const user = response.user;
+                if (user != null) {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'BottomNav' }],
+                    });
+                }
+            } catch (error) {
+                const errorCode = error.code;
+                console.log(errorCode);
+                switch (errorCode) {
+                    case "auth/missing-password":
+                        alert('Vui lòng điền mật khẩu')
+                        break;
+                    case "auth/invalid-email":
+                        alert("Email không đúng định dạng")
+                        break;
 
-                default:
-                    alert('login failed: ' + error.message)
-                    break;
-            }
+                    default:
+                        alert('login failed: ' + error.message)
+                        break;
+                }
 
-        } finally {
-            isLoading(false);
+            } finally {
+                isLoading(false);
+            }
         }
     }
+
     return (
         <View className="flex-1 bg-white">
             <StatusBar barStyle="light-content" />
@@ -118,7 +131,7 @@ export default function LoginScreen() {
                     <Animated.View
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        {loading ? <ActivityIndicator size='large' color='#38bdf8' /> : <>
+                        {loading ? <Loading size="lagre" color='#38bdf8' /> : <>
                             <TouchableOpacity
                                 className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
                                 onPress={login}>
@@ -135,7 +148,7 @@ export default function LoginScreen() {
                         <TouchableOpacity
                             onPress={() => navigation.push('Signup')}
                         >
-                            <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sky-600">SignUp</Text>
+                            <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sky-600">Signup</Text>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>
