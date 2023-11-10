@@ -6,7 +6,7 @@ import CartScreen from "./CartScreen";
 import AccountScreen from "./AccountScreen";
 import DetailProduct from "./DetailProduct";
 import ChatScreen from "./ChatScreen";
-
+import Filter from "./filter";
 
 export {
     LoginScreen,
@@ -17,4 +17,5 @@ export {
     DetailProduct,
     AccountScreen,
     ChatScreen,
+    Filter,
 }

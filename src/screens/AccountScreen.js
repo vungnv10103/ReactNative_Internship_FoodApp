@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StatusBar } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { storage, database, auth } from '../config/FirebaseConfig';
-import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
+import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get, update } from "firebase/database";
 import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import Animated, { useSharedValue, withSpring, FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { AddCategory, AddProduct } from '../components/form/index';
@@ -68,6 +68,7 @@ export default function AccountScreen() {
                         const newDataRef = push(dataRef);
                         const dataID = newDataRef.key;
                         const newData = {
+                            // pos: 2,
                             id: dataID,
                             name: nameCate,
                             img: downLoadURL,
@@ -93,6 +94,18 @@ export default function AccountScreen() {
         } catch (error) {
             console.error('Error uploading image to Firebase Storage', error);
         }
+    }
+
+    function updateQuantityProOfCate(idCate) {
+        const postData = {
+            id: "-NiQa7ZBOp7Yl3Q4kHzN",
+            img: "https://firebasestorage.googleapis.com/v0/b/internship-88b0a.appspot.com/o/images%2Fbd092625-8019-466f-9584-8f11f48b189a.png?alt=media&token=b785bd16-6191-4f63-8e80-e71e35efbc6b",
+            name: "Cơm",
+            count: 2
+        };
+        const updates = {};
+        updates['categories/' + 0 +"/count"] = 2;
+        return update(databaseRef(database), updates);
     }
 
     const handleAddProductSubmit = async (idCate, idProduct, nameProduct, desciption, price, imageSelected) => {
@@ -142,6 +155,9 @@ export default function AccountScreen() {
                                 }
                             });
                             console.log('Thêm mới thành công!');
+                            // update cate count
+                            // updateQuantityProOfCate(idCate)
+
                         } catch (error) {
                             console.error('Thêm thất bại:', error);
                         }

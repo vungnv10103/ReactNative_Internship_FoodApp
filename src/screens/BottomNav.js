@@ -9,31 +9,13 @@ const Tab = createMaterialBottomTabNavigator();
 
 const TabArr = [
     {
-        route: 'Home',
-        label: 'Home',
-        type: Icons.Ionicons,
-        activeIcon: 'home',
-        inActiveIcon: 'home-outline',
-        component: HomeScreen,
-        tabBarColor: "#fbbf24"
+        route: 'Home', label: 'Home', showCustomHeader: true, type: Icons.Ionicons, activeIcon: 'home', inActiveIcon: 'home-outline', component: HomeScreen, tabBarColor: "#fbbf24"
     },
     {
-        route: 'Cart',
-        label: 'Cart',
-        type: Icons.Ionicons,
-        activeIcon: 'cart',
-        inActiveIcon: 'cart-outline',
-        component: CartScreen,
-        tabBarColor: "#FF0000"
+        route: 'Cart', label: 'Cart', showCustomHeader: true, type: Icons.Ionicons, activeIcon: 'cart', inActiveIcon: 'cart-outline', component: CartScreen, tabBarColor: "#FF0000"
     },
     {
-        route: 'Account',
-        label: 'Account',
-        type: Icons.FontAwesome,
-        activeIcon: 'user',
-        inActiveIcon: 'user-o',
-        component: AccountScreen,
-        tabBarColor: "#00FF00"
+        route: 'Account', label: 'Account', showCustomHeader: true, type: Icons.FontAwesome, activeIcon: 'user', inActiveIcon: 'user-o', component: AccountScreen, tabBarColor: "#00FF00"
     },
 ];
 
@@ -43,18 +25,19 @@ export default function BottomNav() {
         <Tab.Navigator initialRouteName='Home'
             shifting={true}
 
-            // theme default
-            // activeColor='#65558f'
-            // inactiveColor='#2c2929'
-            // barStyle={{ backgroundColor: '' }}
+        // theme default
+        // activeColor='#65558f'
+        // inactiveColor='#2c2929'
+        // barStyle={{ backgroundColor: '' }}
 
-            // matcha
-            // activeColor='#0e1f12'
-            // inactiveColor='#0e1f12'
-            // barStyle={{ backgroundColor: '#ebf1e6' }}
+        // matcha
+        // activeColor='#0e1f12'
+        // inactiveColor='#0e1f12'
+        // barStyle={{ backgroundColor: '#ebf1e6' }}
         >
             {TabArr.map((tab) => (
                 <Tab.Screen
+
                     key={tab.route}
                     name={tab.route}
                     component={tab.component}

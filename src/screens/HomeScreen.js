@@ -4,26 +4,31 @@ import { useNavigation } from '@react-navigation/native'
 import { database, auth } from '../config/FirebaseConfig';
 import { ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 import { onAuthStateChanged } from 'firebase/auth';
-import { BellIcon, MagnifyingGlassIcon, XCircleIcon } from "react-native-heroicons/outline"
+import { BellIcon, MagnifyingGlassIcon, XCircleIcon, AdjustmentsHorizontalIcon } from "react-native-heroicons/outline"
 import { Categories, Restaurants, Products, ProductsSale } from '../components/index';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BottomSheetMap from '../components/BottomSheetMap';
+import BottomSheetFilter from '../components/BottomSheetFilter';
+
 
 export default function HomeScreen() {
 
     const navigation = useNavigation();
 
-    const bottomSheetRef = useRef(null);
-    const snapPoints = useMemo(() => ['25%', '50%', '75%', '95%'], []);
+    const bottomSheetMapRef = useRef(null);
+    const bottomSheetFilterRef = useRef(null);
+    const snapPoints = useMemo(() => ['75%', '93%'], []);
     const handleSheetChanges = useCallback((index) => {
         console.log('handleSheetChanges', index);
     }, []);
 
 
-    const openBottomSheet = () => {
-        bottomSheetRef.current?.present()
+    const openBottomSheetMap = () => {
+        bottomSheetMapRef.current?.present()
     }
-
+    const openBottomSheetFilter = () => {
+        bottomSheetFilterRef.current?.present()
+    }
 
 
     const [user, setUser] = useState('');
@@ -131,7 +136,7 @@ export default function HomeScreen() {
     }, []);
 
 
-    let searchClass = search.length > 0 ? " pr-[30px]" : ""
+    let searchClass = search.length > 0 ? " pr-[60px]" : "pr-[30px]"
     return (
         <View className="flex-1 bg-gray-200">
             <StatusBar barStyle="light-content" />
@@ -147,7 +152,7 @@ export default function HomeScreen() {
                 {/* Avatar $ Bell icon */}
                 <View className="mx-3 flex-row justify-between items-center mb-1">
                     <TouchableOpacity
-                        onPress={openBottomSheet}>
+                        onPress={openBottomSheetMap}>
                         <Image
                             style={{ height: hp(5), width: hp(5), borderWidth: 0.5, borderColor: 'gray', borderRadius: 50, resizeMode: 'contain' }}
                             source={
@@ -177,7 +182,12 @@ export default function HomeScreen() {
 
                 {/* search bar */}
                 <View style={{ flexDirection: 'row' }} className={"mx-2 flex-row items-center " + searchClass}>
+                    <TouchableOpacity
+                        onPress={openBottomSheetFilter}>
+                        <AdjustmentsHorizontalIcon size={hp(4)} color="black" />
+                    </TouchableOpacity>
                     <View className="mx-1 flex-row items-center rounded-full bg-black/5 p-[3px]">
+
                         <TextInput
                             placeholder='Search any food...'
                             value={search}
@@ -212,6 +222,7 @@ export default function HomeScreen() {
                             </TouchableOpacity>
                         </View>
                     }
+
                 </View>
                 {/* Categories */}
                 <View>
@@ -232,8 +243,8 @@ export default function HomeScreen() {
                     <Products products={products} activeCategory={activeCategory} productsPopular={productsPopular} />
                 </View>
             </ScrollView>
-
-            <BottomSheetMap bottomSheetRef={bottomSheetRef} snapPoints={snapPoints} />
+            <BottomSheetFilter ref={bottomSheetFilterRef} />
+            <BottomSheetMap bottomSheetRef={bottomSheetMapRef} snapPoints={snapPoints} />
         </View>
     )
 }

@@ -97,6 +97,9 @@ export default function LoginScreen() {
                     case "auth/invalid-email":
                         alert("Email không đúng định dạng")
                         break;
+                    case "auth/network-request-failed":
+                        alert("Vui lòng kết nối internet")
+                        break;
 
                     default:
                         alert('login failed: ' + error.message)
