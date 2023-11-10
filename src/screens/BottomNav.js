@@ -1,13 +1,11 @@
-import { View, Text } from 'react-native'
 import React from 'react'
 import HomeScreen from './HomeScreen';
 import CartScreen from './CartScreen';
 import AccountScreen from './AccountScreen';
-
-// import { HomeScreen, CartScreen, AccountScreen } from './index'
 import Icon, { Icons } from '../components/Icons';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 const Tab = createMaterialBottomTabNavigator();
+
 
 const TabArr = [
     {
@@ -46,25 +44,22 @@ export default function BottomNav() {
             shifting={true}
 
             // theme default
-            activeColor='#65558f'
-            inactiveColor='#2c2929'
-            barStyle={{ backgroundColor: '' }}
+            // activeColor='#65558f'
+            // inactiveColor='#2c2929'
+            // barStyle={{ backgroundColor: '' }}
 
-        // matcha
-        // activeColor='#0e1f12'
-        // inactiveColor='#0e1f12'
-        // barStyle={{ backgroundColor: '#ebf1e6' }}
+            // matcha
+            // activeColor='#0e1f12'
+            // inactiveColor='#0e1f12'
+            // barStyle={{ backgroundColor: '#ebf1e6' }}
         >
             {TabArr.map((tab) => (
                 <Tab.Screen
                     key={tab.route}
                     name={tab.route}
                     component={tab.component}
-
                     options={{
-                        headerShown: false,
                         tabBarLabel: tab.label,
-
                         tabBarIcon: ({ focused, color, size }) => (
                             <Icon name={focused ? tab.activeIcon : tab.inActiveIcon} type={tab.type} color={color} size={size} />
                         ),

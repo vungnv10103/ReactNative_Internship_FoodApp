@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image, StatusBar, ScrollView, TextInput, FlatList, RefreshControl } from 'react-native'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { database, auth } from '../config/FirebaseConfig';
 import { ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
@@ -7,11 +7,24 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { BellIcon, MagnifyingGlassIcon, XCircleIcon } from "react-native-heroicons/outline"
 import { Categories, Restaurants, Products, ProductsSale } from '../components/index';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import BottomSheetMap from '../components/BottomSheetMap';
 
 export default function HomeScreen() {
 
     const navigation = useNavigation();
+
+    const bottomSheetRef = useRef(null);
+    const snapPoints = useMemo(() => ['25%', '50%', '75%', '95%'], []);
+    const handleSheetChanges = useCallback((index) => {
+        console.log('handleSheetChanges', index);
+    }, []);
+
+
+    const openBottomSheet = () => {
+        bottomSheetRef.current?.present()
+    }
+
+
 
     const [user, setUser] = useState('');
     const [avatar, setAvatar] = useState('');
@@ -122,8 +135,9 @@ export default function HomeScreen() {
     return (
         <View className="flex-1 bg-gray-200">
             <StatusBar barStyle="light-content" />
+
             <ScrollView
-                className="space-y-6 pt-5"
+                className="space-y-6 pt-1"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 50 }}
                 refreshControl={
@@ -133,9 +147,7 @@ export default function HomeScreen() {
                 {/* Avatar $ Bell icon */}
                 <View className="mx-3 flex-row justify-between items-center mb-1">
                     <TouchableOpacity
-                        onPress={() => {
-                            alert('Profile')
-                        }}>
+                        onPress={openBottomSheet}>
                         <Image
                             style={{ height: hp(5), width: hp(5), borderWidth: 0.5, borderColor: 'gray', borderRadius: 50, resizeMode: 'contain' }}
                             source={
@@ -205,10 +217,12 @@ export default function HomeScreen() {
                 <View>
                     {categories.length > 0 && <Categories categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory} />}
                 </View>
+
                 {/* Restaurants */}
                 {/* <View>
                     <Restaurants />
                 </View> */}
+
                 {/* Products Sale */}
                 <View>
                     <ProductsSale productsSale={productsSale} />
@@ -218,6 +232,8 @@ export default function HomeScreen() {
                     <Products products={products} activeCategory={activeCategory} productsPopular={productsPopular} />
                 </View>
             </ScrollView>
+
+            <BottomSheetMap bottomSheetRef={bottomSheetRef} snapPoints={snapPoints} />
         </View>
     )
 }

@@ -1,4 +1,4 @@
-import { Text, View, StatusBar, SafeAreaView, TextInput, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
+import { Text, View, StatusBar, SafeAreaView, TextInput, TouchableOpacity, Image, ActivityIndicator, ToastAndroid } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import Animated, { useSharedValue, withSpring, FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
@@ -41,6 +41,29 @@ export default function LoginScreen() {
     //     getUserData()
     // }, []);
 
+
+    const showToast = () => {
+        ToastAndroid.show('Login Success', ToastAndroid.SHORT);
+    };
+
+    const showToastWithGravity = () => {
+        ToastAndroid.showWithGravity(
+            'Login Success',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+        );
+    };
+
+    const showToastWithGravityAndOffset = () => {
+        ToastAndroid.showWithGravityAndOffset(
+            'Login Success',
+            ToastAndroid.LONG,
+            ToastAndroid.BOTTOM,
+            25,
+            50,
+        );
+    };
+
     const login = async () => {
         isLoading(true);
         if (email.length == 0) {
@@ -56,6 +79,9 @@ export default function LoginScreen() {
                 let data = JSON.stringify(response, null, 2);
                 const user = response.user;
                 if (user != null) {
+                    // showToast()
+                    // showToastWithGravity()
+                    showToastWithGravityAndOffset()
                     navigation.reset({
                         index: 0,
                         routes: [{ name: 'BottomNav' }],
@@ -131,7 +157,7 @@ export default function LoginScreen() {
                     <Animated.View
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        {loading ? <Loading size="lagre" color='#38bdf8' /> : <>
+                        {loading ? <ActivityIndicator size="lagre" color='#38bdf8' /> : <>
                             <TouchableOpacity
                                 className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
                                 onPress={login}>
