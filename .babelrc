@@ -1,0 +1,12 @@
+{
+    "plugins": [
+        [
+            "transform-inline-environment-variables",
+            {
+                "include": [
+                    "REACT_APP_GOOGLE_API_KEY"
+                ]
+            }
+        ]
+    ]
+}

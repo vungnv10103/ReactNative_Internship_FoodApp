@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image, StatusBar, ScrollView, TextInput, FlatList, RefreshControl } from 'react-native'
-import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { database, auth } from '../config/FirebaseConfig';
 import { ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
@@ -9,7 +9,7 @@ import { Categories, Restaurants, Products, ProductsSale } from '../components/i
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import BottomSheetMap from '../components/BottomSheetMap';
 import BottomSheetFilter from '../components/BottomSheetFilter';
-
+import Icon, { Icons } from '../components/Icons';
 
 export default function HomeScreen() {
 
@@ -17,7 +17,7 @@ export default function HomeScreen() {
 
     const bottomSheetMapRef = useRef(null);
     const bottomSheetFilterRef = useRef(null);
-    const snapPoints = useMemo(() => ['75%', '93%'], []);
+
     const handleSheetChanges = useCallback((index) => {
         console.log('handleSheetChanges', index);
     }, []);
@@ -149,8 +149,36 @@ export default function HomeScreen() {
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }
             >
+
+                {/* Location */}
+                <View className="h-16 items-center flex-row justify-between">
+                    <View className="flex-row items-center">
+                        <TouchableOpacity onPress={() => { }}>
+                            <Image className="h-16 w-16" source={require('./../assets/images/dev/bikeGuy.png')} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={openBottomSheetMap}>
+                            <Text style={{ fontFamily: "Inter-Medium", color: 'black' }}>Delivery • Now</Text>
+                            <View className="mt-1.5 flex-row"
+                            >
+                                <Text style={{ fontFamily: "Inter-Bold", color: 'black' }}>Selected location</Text>
+                                <Icon name={'keyboard-arrow-down'} type={Icons.MaterialIcons} color='#00af80' />
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
+                    <TouchableOpacity className="mx-3"
+                        onPress={() => {
+
+                        }}>
+                        <Image className="h-6 w-6" source={require('./../assets/images/dev/menus.png')} />
+                    </TouchableOpacity>
+                </View>
+
+
                 {/* Avatar $ Bell icon */}
-                <View className="mx-3 flex-row justify-between items-center mb-1">
+                <View className="mx-3 flex-row justify-between items-center mb-1 hidden">
                     <TouchableOpacity
                         onPress={openBottomSheetMap}>
                         <Image
@@ -244,7 +272,7 @@ export default function HomeScreen() {
                 </View>
             </ScrollView>
             <BottomSheetFilter ref={bottomSheetFilterRef} />
-            <BottomSheetMap bottomSheetRef={bottomSheetMapRef} snapPoints={snapPoints} />
+            <BottomSheetMap bottomSheetRef={bottomSheetMapRef} />
         </View>
     )
 }

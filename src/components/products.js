@@ -16,7 +16,7 @@ export default function Products({ activeCategory, products, productsPopular }) 
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowLoading(false);
-        }, 5000);
+        }, 6000);
 
         return () => clearTimeout(timer);
     }, []);

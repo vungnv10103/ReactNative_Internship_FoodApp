@@ -108,7 +108,7 @@ export default function AccountScreen() {
         return update(databaseRef(database), updates);
     }
 
-    const handleAddProductSubmit = async (idCate, idProduct, nameProduct, desciption, price, imageSelected) => {
+    const handleAddProductSubmit = async (idCate, idProduct, nameProduct, description, price, imageSelected) => {
         try {
             const response = await fetch(imageSelected.uri);
             const blob = await response.blob()
@@ -138,7 +138,7 @@ export default function AccountScreen() {
                             id: dataID,
                             idCate: idCate,
                             name: nameProduct,
-                            desciption: desciption,
+                            description: description,
                             price: price,
                             img: downLoadURL,
                             sold: 0,

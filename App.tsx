@@ -3,7 +3,7 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CustomHeader } from './src/components/index'
-import { LoginScreen, SignupScreen, HomeScreen, DetailProduct, BottomNav, AccountScreen, CartScreen, ChatScreen, Filter } from './src/screens/index'
+import { LoginScreen, SignupScreen, HomeScreen, DetailProduct, BottomNav, AccountScreen, CartScreen, ChatScreen, Filter, LocationScreen } from './src/screens/index'
 const Stack = createNativeStackNavigator();
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import BottomSheet, { BottomSheetView, BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -19,11 +19,12 @@ export default function App() {
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
             <Stack.Screen name='DetailProduct' component={DetailProduct} options={{ headerShown: false }} />
-            {/* <Stack.Screen name='BottomNav' component={BottomNav} options={{ headerShown: false }} /> */}
-            <Stack.Screen name='BottomNav' component={BottomNav} options={{ header: () => <CustomHeader show={true} /> }} />
+            <Stack.Screen name='BottomNav' component={BottomNav} options={{ headerShown: false }} />
+            {/* <Stack.Screen name='BottomNav' component={BottomNav} options={{ header: () => <CustomHeader show={true} /> }} /> */}
             <Stack.Screen name='Account' component={AccountScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='Location' component={LocationScreen} options={{ headerShown: true, headerTitle: 'Select location', headerTitleAlign: 'center' }} />
             <Stack.Group screenOptions={{ presentation: 'modal' }}>
               <Stack.Screen name='Filter' component={Filter} options={{ headerShown: false, presentation: 'modal' }} />
             </Stack.Group>

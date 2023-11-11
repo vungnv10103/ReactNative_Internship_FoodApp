@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">FoodApp</string>
+    <!-- <string name="API_KEY">AIzaSyAVq71wCwEj7AvzemfihpF-3EmeFBNGdtQ</string>  -->
+    <string name="API_KEY">AIzaSyCZ-6jHzduwzxK6SxtFCGPRUPAAxh1za94</string> 
 </resources>
