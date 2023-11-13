@@ -15,6 +15,7 @@ export default function ProductsSale({ productsSale }) {
                             <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Sales</Text>
                             <FlatList
                                 horizontal={true}
+                                showsHorizontalScrollIndicator={false}
                                 data={productsSale}
                                 keyExtractor={item => item.id}
                                 renderItem={({ item }) => <Item item={item} navigation={navigation} />}
@@ -39,7 +40,7 @@ const getNewPrice = (oldPrice, discount) => {
 
 const Item = ({ item, navigation }) => (
     <TouchableOpacity
-        onPress={() => navigation.navigate("DetailProduct", { ...item })}
+        onPress={() => navigation.push("DetailProduct", { ...item })}
     >
         <View
             style={{ shadowColor: themeColors.bgColor(0.2), shadowRadius: 7 }}
@@ -47,7 +48,9 @@ const Item = ({ item, navigation }) => (
         >
             <Image className="h-36 w-64 rounded-t-3xl" source={{ uri: item.img }} />
             <View className="px-3 pb-4 space-y-2">
-                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-lg text-black pt-2">{item.name}</Text>
+                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-lg text-black pt-2">
+                    {item.name.length > 20 ? item.name.slice(0, 20) + "..." : item.name}
+                </Text>
                 <View className="flex-row items-center space-x-1">
                     <Image source={require('../assets/images/dev/fullStar.png')} className="h-4 w-4" />
                     <Text style={{ fontFamily: 'Inter-Medium' }} className="text-xs">

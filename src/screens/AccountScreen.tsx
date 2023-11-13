@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StatusBar } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { storage, database, auth } from '../config/FirebaseConfig';
-import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get, update } from "firebase/database";
+import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get, update, set } from "firebase/database";
 import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import Animated, { useSharedValue, withSpring, FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import { AddCategory, AddProduct } from '../components/form/index';
@@ -9,31 +9,38 @@ import uuid from 'react-native-uuid';
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native'
 
+interface Pro {
+    uid: string,
+}
+interface User {
+    uid: string,
+    email: string,
+    emailVerified: boolean,
+    providerData: Array<Pro>[
+    ]
 
+}
 
-export default function AccountScreen() {
+export default function AccountScreen(props: any) {
     const navigation = useNavigation();
 
-    const [user, setUser] = useState('');
+    const [currentUser, setUser] = useState<any>(null);
     const [avatar, setAvatar] = useState('');
+    const [email, setEmail] = useState<String | null>('');
 
     const [selectedImage, setSelectedImage] = useState(null);
-    const [progress, setProgress] = useState(0)
+    const [progress, setProgress] = useState<number | any>(0)
     const [isAddCategoryVisible, setAddCategoryVisible] = useState(false);
     const [isAddProductVisible, setAddProductVisible] = useState(false);
 
 
     const getUserData = async () => {
-        try {
-            onAuthStateChanged(auth, (user) => {
-                if (user != null) {
-                    setUser(user.displayName ? user.displayName : user.email)
-                    setAvatar(user.photoURL ? user.photoURL : '')
-                }
-            })
-        } catch (error) {
-            console.log("Error: " + error.message);
-        }
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setEmail(user.email)
+                setUser(user)
+            }
+        })
     }
 
     useEffect(() => {
@@ -41,7 +48,7 @@ export default function AccountScreen() {
     }, []);
 
 
-    const handleAddCategorySubmit = async (idCate, nameCate, imageSelected) => {
+    const handleAddCategorySubmit = async (idCate: string, nameCate: string, imageSelected: any) => {
         try {
             const response = await fetch(imageSelected.uri);
             const blob = await response.blob()
@@ -56,7 +63,7 @@ export default function AccountScreen() {
                     // Handle error
                 },
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL) => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL: any) => {
                         // save record
                         console.log("File at: " + downLoadURL);
                         setSelectedImage(downLoadURL);
@@ -96,19 +103,20 @@ export default function AccountScreen() {
         }
     }
 
-    function updateQuantityProOfCate(idCate) {
+    function updateQuantityProOfCate(idCate: string) {
         const postData = {
             id: "-NiQa7ZBOp7Yl3Q4kHzN",
             img: "https://firebasestorage.googleapis.com/v0/b/internship-88b0a.appspot.com/o/images%2Fbd092625-8019-466f-9584-8f11f48b189a.png?alt=media&token=b785bd16-6191-4f63-8e80-e71e35efbc6b",
             name: "Cơm",
             count: 2
         };
-        const updates = {};
-        updates['categories/' + 0 +"/count"] = 2;
+        const updates: { [key: string]: number } = {};
+        updates[`categories/${0}/count`] = 2;
+
         return update(databaseRef(database), updates);
     }
 
-    const handleAddProductSubmit = async (idCate, idProduct, nameProduct, description, price, imageSelected) => {
+    const handleAddProductSubmit = async (idCate: string, idProduct: string, nameProduct: string, description: string, price: string, imageSelected: any) => {
         try {
             const response = await fetch(imageSelected.uri);
             const blob = await response.blob()
@@ -116,14 +124,14 @@ export default function AccountScreen() {
             const mStorageRef = storageRef(storage, "images/" + fileName)
             const uploadTask = uploadBytesResumable(mStorageRef, blob)
             uploadTask.on("state_changed", (snapshot) => {
-                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                const progress: any = (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                 setProgress(progress.toFixed())
             },
                 (error) => {
                     // Handle error
                 },
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL) => {
+                    getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL: any) => {
                         // save record
                         console.log("File at: " + downLoadURL);
                         setSelectedImage(downLoadURL);
@@ -173,7 +181,7 @@ export default function AccountScreen() {
 
     const logout = () => {
         signOut(auth).then(() => {
-            navigation.reset({
+            props.navigation.reset({
                 index: 0,
                 routes: [{ name: 'Login' }],
             });
@@ -182,13 +190,14 @@ export default function AccountScreen() {
         });
     }
 
+    const isMerchant = email?.includes("merchant")
 
     return (
         <View className="flex-1 bg-white">
             <StatusBar barStyle="light-content" />
-            <View className="flex justify-around pt-20">
-                <View className="flex items-center mx-5 space-y-4 pt-20">
-                    <Text>{user}</Text>
+            <View className="mx-5 space-y-4 pt-20">
+                <Text>{email}</Text>
+                {isMerchant ? (<View>
                     <Animated.View
                         className="w-full"
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
@@ -208,18 +217,18 @@ export default function AccountScreen() {
                             <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm sản phẩm</Text>
                         </TouchableOpacity>
                     </Animated.View>
+                </View>) : (<View>
+                </View>)}
 
-                    <Animated.View
-                        className="w-full"
-                        entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        <TouchableOpacity
-                            className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
-                            onPress={logout}>
-                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Đăng xuất</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
-                </View>
-
+                <Animated.View
+                    className="w-full"
+                    entering={FadeInDown.delay(400).duration(1000).springify()}>
+                    <TouchableOpacity
+                        className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
+                        onPress={logout}>
+                        <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Đăng xuất</Text>
+                    </TouchableOpacity>
+                </Animated.View>
             </View>
 
             <AddCategory

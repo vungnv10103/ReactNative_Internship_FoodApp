@@ -85,7 +85,7 @@ export default function HomeScreen() {
             setProducts(dataProductFromFirebase);
             setProductsSale(dataProductSale)
         }, {
-            onlyOnce: false
+            onlyOnce: true
         });
     }
 
@@ -135,7 +135,7 @@ export default function HomeScreen() {
         }, 2000);
     }, []);
 
-
+    let usernameClass = user.includes('merchant') ? "text-sky-500" : "text-green-500"
     let searchClass = search.length > 0 ? " pr-[60px]" : "pr-[30px]"
     return (
         <View className="flex-1 bg-gray-200">
@@ -199,7 +199,7 @@ export default function HomeScreen() {
                 {/* greetings and punchline */}
                 <View className="mx-4 space-y-2 mb-2">
                     <Text style={{ fontSize: hp(1.7), fontFamily: 'Inter-Medium' }} className="text-neutral-600">
-                        Hello, {user} !
+                        Hello,  <Text className={"" + usernameClass}>{user}</Text> !
                     </Text>
                     <View>
                         <Text style={{ fontSize: hp(3.3), fontFamily: 'Inter-Medium' }} className="font-semibold text-neutral-600">Bringing the culinary world to your <Text style={{ fontFamily: 'Inter-Medium' }} className="text-amber-400">doorstep</Text></Text>

@@ -6,7 +6,6 @@ import Icon, { Icons } from '../components/Icons';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 const Tab = createMaterialBottomTabNavigator();
 
-
 const TabArr = [
     {
         route: 'Home', label: 'Home', showCustomHeader: true, type: Icons.Ionicons, activeIcon: 'home', inActiveIcon: 'home-outline', component: HomeScreen, tabBarColor: "#fbbf24"
@@ -22,7 +21,9 @@ const TabArr = [
 
 export default function BottomNav() {
     return (
-        <Tab.Navigator initialRouteName='Home'
+
+
+        <Tab.Navigator onTabLongPress={() => alert("123")} initialRouteName='Home'
             shifting={true}
 
         // theme default
@@ -37,12 +38,12 @@ export default function BottomNav() {
         >
             {TabArr.map((tab) => (
                 <Tab.Screen
-
                     key={tab.route}
                     name={tab.route}
                     component={tab.component}
                     options={{
                         tabBarLabel: tab.label,
+                        tabBarBadge: tab.label === "Cart" ? 2 : null,
                         tabBarIcon: ({ focused, color, size }) => (
                             <Icon name={focused ? tab.activeIcon : tab.inActiveIcon} type={tab.type} color={color} size={size} />
                         ),

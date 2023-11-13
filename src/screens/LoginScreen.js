@@ -131,7 +131,7 @@ export default function LoginScreen() {
                 <View className="flex items-center mx-5 space-y-4 pt-20">
                     <Animated.View
                         entering={FadeInDown.duration(1000).springify()}
-                        className="bg-black/5 p-2 rounded-2xl w-full">
+                        className="bg-black/5 p-1.5 rounded-lg w-full">
 
                         <TextInput
                             style={{ fontFamily: 'Inter-Medium' }}
@@ -144,7 +144,7 @@ export default function LoginScreen() {
                     </Animated.View>
                     <Animated.View
                         entering={FadeInDown.delay(200).duration(1000).springify()}
-                        className="bg-black/5 p-2 rounded-2xl w-full mb-3">
+                        className="bg-black/5 p-1.5 rounded-lg w-full mb-3">
 
                         <TextInput
                             style={{ fontFamily: 'Inter-Medium' }}
@@ -162,7 +162,7 @@ export default function LoginScreen() {
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
                         {loading ? <ActivityIndicator size="lagre" color='#38bdf8' /> : <>
                             <TouchableOpacity
-                                className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
+                                className="w-full bg-sky-400 p-3 rounded-lg mb-3"
                                 onPress={login}>
                                 <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Login</Text>
                             </TouchableOpacity>
@@ -177,7 +177,7 @@ export default function LoginScreen() {
                         <TouchableOpacity
                             onPress={() => navigation.push('Signup')}
                         >
-                            <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sky-600">Signup</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sky-600">Signup</Text>
                         </TouchableOpacity>
                     </Animated.View>
                 </View>

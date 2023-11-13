@@ -29,14 +29,15 @@ export default function SignupScreen() {
 
     const sigup = async () => {
         isLoading(true);
-        if (password.length == 0) {
-            isLoading(false);
-            alert("Vui lòng điền password")
-        }
-        else if (username.length == 0) {
+        if (username.length == 0) {
             isLoading(false);
             alert("Vui lòng điền username")
-        } else if (password.length == 0) {
+        }
+        else if (email.length == 0) {
+            isLoading(false);
+            alert("Vui lòng điền email")
+        }
+        else if (password.length == 0) {
             isLoading(false);
             alert("Vui lòng điền password")
         }
@@ -90,7 +91,7 @@ export default function SignupScreen() {
                 <View className="flex items-center mx-5 space-y-4 pt-20">
                     <Animated.View
                         entering={FadeInDown.duration(1000).springify()}
-                        className="bg-black/5 p-2 rounded-2xl w-full">
+                        className="bg-black/5 p-1.5 rounded-lg w-full">
                         <TextInput
                             style={{ fontFamily: 'Inter-Medium', color: 'black' }}
                             value={username}
@@ -101,7 +102,7 @@ export default function SignupScreen() {
                     </Animated.View>
                     <Animated.View
                         entering={FadeInDown.delay(200).duration(1000).springify()}
-                        className="bg-black/5 p-2 rounded-2xl w-full">
+                        className="bg-black/5 p-1.5 rounded-lg w-full">
                         <TextInput
                             style={{ fontFamily: 'Inter-Medium', color: 'black' }}
                             value={email}
@@ -112,7 +113,7 @@ export default function SignupScreen() {
                     </Animated.View>
                     <Animated.View
                         entering={FadeInDown.delay(400).duration(1000).springify()}
-                        className="bg-black/5 p-2 rounded-2xl w-full mb-3">
+                        className="bg-black/5 p-1.5 rounded-lg w-full mb-3">
                         <TextInput
                             style={{ fontFamily: 'Inter-Medium', color: 'black' }}
                             value={password}
@@ -126,10 +127,10 @@ export default function SignupScreen() {
                     <Animated.View className="w-full" entering={FadeInDown.delay(600).duration(1000).springify()}>
                         {loading ? <ActivityIndicator size='large' color='#38bdf8' /> : <>
                             <TouchableOpacity
-                                className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
+                                className="w-full bg-sky-400 p-3 rounded-lg mb-3"
                                 onPress={sigup}
                             >
-                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl  text-white text-center">SignUp</Text>
+                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Signup</Text>
                             </TouchableOpacity>
                         </>}
                     </Animated.View>
@@ -140,7 +141,7 @@ export default function SignupScreen() {
 
                         <Text style={{ color: 'black', fontFamily: 'Inter-Medium' }}>Already have an account? </Text>
                         <TouchableOpacity onPress={() => navigation.push('Login')}>
-                            <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sky-600">Login</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sky-600">Login</Text>
                         </TouchableOpacity>
 
                     </Animated.View>
