@@ -43,7 +43,7 @@ export default function BottomNav() {
                     component={tab.component}
                     options={{
                         tabBarLabel: tab.label,
-                        tabBarBadge: tab.label === "Cart" ? 2 : null,
+                        tabBarBadge: tab.label === "Cart" ? 3 : null,
                         tabBarIcon: ({ focused, color, size }) => (
                             <Icon name={focused ? tab.activeIcon : tab.inActiveIcon} type={tab.type} color={color} size={size} />
                         ),

@@ -85,7 +85,7 @@ export default function HomeScreen() {
             setProducts(dataProductFromFirebase);
             setProductsSale(dataProductSale)
         }, {
-            onlyOnce: true
+            onlyOnce: false
         });
     }
 
