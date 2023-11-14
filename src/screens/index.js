@@ -4,7 +4,8 @@ import BottomNav from "./BottomNav";
 import HomeScreen from "./HomeScreen";
 import CartScreen from "./CartScreen";
 import AccountScreen from "./AccountScreen";
-import DetailProduct from "./DetailProduct";
+import DetailProductByIDCate from "./DetailProductByIDCate";
+import DetailProductByID from "./DetailProductByID";
 import ChatScreen from "./ChatScreen";
 import Filter from "./filter";
 import LocationScreen from "./LocationScreen";
@@ -17,7 +18,8 @@ export {
     BottomNav,
     HomeScreen,
     CartScreen,
-    DetailProduct,
+    DetailProductByIDCate,
+    DetailProductByID,
     AccountScreen,
     ChatScreen,
     Filter,

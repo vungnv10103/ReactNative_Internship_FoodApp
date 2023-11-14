@@ -81,7 +81,7 @@ const ProductItem = ({ item, index, navigation }) => {
             <Pressable
                 style={{ width: '100%', paddingLeft: isEven ? 0 : 8, paddingRight: isEven ? 8 : 0 }}
                 className="flex justify-center mb-4 space-y-1"
-                onPress={() => navigation.push('DetailProduct', { ...item })}
+                onPress={() => navigation.push('DetailProductByIDCate', { ...item })}
             >
                 <Image
                     source={{ uri: item.img }}

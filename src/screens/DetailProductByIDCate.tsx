@@ -4,7 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { ChevronLeftIcon, ClockIcon, FireIcon } from 'react-native-heroicons/outline';
 import { HeartIcon, Square3Stack3DIcon, UsersIcon } from 'react-native-heroicons/solid';
 import Animated, { FadeInDown, FadeIn, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import { storage, database, auth } from './../config/FirebaseConfig';
+import { storage, database, auth } from '../config/FirebaseConfig';
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 import { useNavigation, Link } from '@react-navigation/native'
 import { Products } from '../components';
@@ -35,7 +35,7 @@ interface SameDataProduct {
 
 
 
-export default function DetailProduct(props: any) {
+export default function DetailProductByIDCate(props: any) {
     const navigation = useNavigation()
 
 
@@ -69,9 +69,7 @@ export default function DetailProduct(props: any) {
     }, []);
 
 
-
-    let productSelected = props.route.params
-    // console.log("product selected: ", productSelected);
+    const [productSelected, setProductSelected] = useState<Product>(props.route.params)
 
     const [productByIdCart, setProductByIdCart] = useState<Product[]>([])
     const [flagProduct, setFlagProduct] = useState(true);
@@ -82,6 +80,7 @@ export default function DetailProduct(props: any) {
     const [loading, setLoading] = useState(true);
     const [DATA, setSameData] = useState<SameDataProduct[]>([]);
 
+    const [quantity, setQuantity] = useState<number>(1);
     const [activeIndex, setActiveIndex] = useState(0);
     const opacity = useSharedValue(0)
     const animatedStyles = useAnimatedStyle(() => ({
@@ -180,11 +179,32 @@ export default function DetailProduct(props: any) {
         index,
     }));
 
-    const getNewPrice = (oldPrice: number, discount: number) => {
-        const newPrice = (oldPrice - (oldPrice * discount / 100)).toString()
-        return formatMoney(newPrice)
+    const handleQuantity = (type: string) => {
+        if (type === "minus") {
+            if (quantity > 1) {
+                setQuantity(quantity - 1)
+            }
+        } else {
+            setQuantity(quantity + 1)
+        }
     }
-    function formatMoney(price: string) {
+    
+    const getNewPrice = (oldPrice: number, discount: number, isFormat: boolean) => {
+        const newPrice = oldPrice - (oldPrice * discount / 100)
+        if (isFormat) {
+            return formatMoney(newPrice)
+        }
+        else {
+            return newPrice
+        }
+    }
+
+    const getTotalPrice = (oldPrice: number, discount: number, quantity: number) => {
+        const totalPrice = (oldPrice - (oldPrice * discount / 100)) * quantity
+        return formatMoney(totalPrice)
+    }
+
+    function formatMoney(price: number) {
         // if (typeof price === 'number') {
         //     if (price >= 1000) {
         //         return price.toLocaleString('vi-VN');
@@ -194,11 +214,10 @@ export default function DetailProduct(props: any) {
         // } else {
         //     return '$$$';
         // }
-        const valuePrice = parseFloat(price)
-        if (valuePrice >= 1000) {
-            return valuePrice.toLocaleString('vi-VN') + " đ";
+        if (price >= 1000) {
+            return price.toLocaleString('vi-VN') + " đ";
         } else {
-            return valuePrice.toString() + " đ";
+            return price.toString() + " đ";
         }
     }
 
@@ -258,6 +277,8 @@ export default function DetailProduct(props: any) {
         <ProductsRecommend productRecommend={item} />
     )
 
+    let classMinusBtn = quantity <= 1 ? "bg-teal-100" : "bg-teal-400"
+
     if (loading) {
         return <Loading size='large' />;
     }
@@ -271,7 +292,7 @@ export default function DetailProduct(props: any) {
                         className="flex-1"
                         backgroundColor="#fff"
                         renderBackground={() =>
-                            <View className=''>
+                            <View className='shadow-2xl border-b border-gray-100'>
                                 <Image
                                     className="w-full h-72 rounded-2xl"
                                     source={{ uri: productSelected.img }}
@@ -318,20 +339,47 @@ export default function DetailProduct(props: any) {
                                 {productSelected.sale > 0 ? (
                                     <View className='flex-row items-center ml-4'>
                                         <Image className="h-5 w-5" source={require('./../assets/images/sale_tag.png')} />
-                                        <Text style={{ fontFamily: "Inter-Bold" }} className='line-through text-red-600 text-base ml-3'>
+                                        <Text style={{ fontFamily: "Inter-Bold" }} className='line-through text-red-600 text-sm ml-2'>
                                             {formatMoney(productSelected.price)}
                                         </Text>
                                     </View>
                                 ) : (<View></View>)}
-                                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black text-lg mx-4'>
-                                    {getNewPrice(productSelected.price, productSelected.sale)}
+                                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black text-base ml-4 mr-2'>
+                                    {getNewPrice(productSelected.price, productSelected.sale, true)}
+                                </Text>
+
+                                <Icon type={Icons.Ionicons} name="close-outline" color='black' size={24} style={{}} />
+                                <TouchableOpacity
+                                    className='ml-2'
+                                    onPress={() => handleQuantity('minus')}
+                                >
+                                    <Text className={classMinusBtn + ' rounded-lg p-1.5 text-center justify-items-center text-white'}>
+                                        <Icon type={Icons.Ionicons} name="remove-outline" color='white' size={24} style={{}} />
+                                    </Text>
+                                </TouchableOpacity>
+                                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black mx-4 text-lg'>{quantity}</Text>
+                                <TouchableOpacity
+                                    onPress={() => handleQuantity('plus')}
+                                >
+                                    {/* text-teal-400 */}
+                                    <Text className='bg-teal-400 rounded-lg p-1.5 text-center text-white'>
+                                        <Icon type={Icons.Ionicons} name="add" color='white' size={24} style={{}} />
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+
+
+                            {/* PLus && minus */}
+                            <View className='flex-row justify-center items-center mt-4'>
+                                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black mx-4 text-lg'>
+                                    = {getTotalPrice(productSelected.price, productSelected.sale, quantity)}
                                 </Text>
                             </View>
 
                             {/* Button Checkout */}
-                            <View className='flex items-center mx-5 mt-4'>
+                            <View className='flex items-center mx-5 mt-5'>
                                 <TouchableOpacity
-                                    className='w-full bg-amber-400 p-2.5 rounded-lg  mx-14'
+                                    className='w-full bg-teal-400 p-2.5 rounded-lg  mx-14'
                                     onPress={showDataTemp}
                                 >
                                     <Text style={{ fontFamily: "Inter-Bold" }} className='text-white text-lg uppercase text-center'>Add to cart</Text>

@@ -32,7 +32,7 @@ const getNewPrice = (oldPrice, discount) => {
 
 const Item = ({ item, navigation }) => (
     <TouchableOpacity
-        onPress={() => alert(item.name)}
+        onPress={() => navigation.navigate("DetailProductByID", { ...item })}
     >
         <View
             style={{ shadowColor: themeColors.bgColor(0.2), shadowRadius: 7 }}
