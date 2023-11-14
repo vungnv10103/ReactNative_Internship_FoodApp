@@ -54,9 +54,9 @@ export default function LoginScreen() {
         );
     };
 
-    const showToastWithGravityAndOffset = () => {
+    const showToastWithGravityAndOffset = (message) => {
         ToastAndroid.showWithGravityAndOffset(
-            'Login Success',
+            message,
             ToastAndroid.LONG,
             ToastAndroid.BOTTOM,
             25,
@@ -80,8 +80,7 @@ export default function LoginScreen() {
                 const user = response.user;
                 if (user != null) {
                     // showToast()
-                    // showToastWithGravity()
-                    showToastWithGravityAndOffset()
+                    showToastWithGravity()
                     navigation.reset({
                         index: 0,
                         routes: [{ name: 'BottomNav' }],

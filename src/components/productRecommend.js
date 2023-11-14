@@ -36,7 +36,7 @@ const Item = ({ item, navigation }) => (
     >
         <View
             style={{ shadowColor: themeColors.bgColor(0.2), shadowRadius: 7 }}
-            className="flex-row m-1 py-2 px-3 bg-gray-200 rounded-xl shadow-lg justify-between"
+            className="flex-row m-1 py-2 px-3  rounded-xl shadow-lg justify-between"
         >
             <View className="">
                 <Text style={{ fontFamily: 'Inter-Bold' }} className="text-base text-black pt-1.5">
