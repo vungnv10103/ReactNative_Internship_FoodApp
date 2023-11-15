@@ -1,18 +1,39 @@
 import { View, Text, Image, FlatList, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { themeColors } from '../theme';
 import { useNavigation } from '@react-navigation/native';
+import Loading from './Loading';
+
 
 export default function ProductsSale({ productsSale }) {
     const navigation = useNavigation()
+
+    const [showLoading, setShowLoading] = useState(true);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setShowLoading(false);
+        }, 7000);
+
+        return () => clearTimeout(timer);
+    }, []);
+
+    if (showLoading) {
+        return (
+            <View className="mx-4 space-y-4">
+                <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Sales</Text>
+                <Loading className="mt-20" />
+            </View>
+        )
+    }
+
     return (
-        <View>
+        <View className="mx-4 space-y-4">
+            <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Sales</Text>
             {
                 productsSale.length > 0 ?
                     (
-                        <View className="mx-4 space-y-4">
-                            <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Sales</Text>
+                        <View>
                             <FlatList
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}
@@ -24,7 +45,7 @@ export default function ProductsSale({ productsSale }) {
                     ) :
                     (
                         <View>
-                            <Text className="text-black">No data available</Text>
+                            <Text className="text-black">No data product sale available</Text>
                         </View>
                     )
             }

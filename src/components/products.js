@@ -16,46 +16,37 @@ export default function Products({ activeCategory, products, productsPopular }) 
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowLoading(false);
-        }, 6000);
+        }, 9000);
 
         return () => clearTimeout(timer);
     }, []);
 
+    if (showLoading) {
+        return (
+            <View className="mx-4 space-y-4">
+                <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className="text-black">Products</Text>
+                <Loading className="mt-20" />
+            </View>
+        )
+    }
 
     return (
         <View className="mx-4 space-y-4">
+            {/* Title */}
             {/* <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className="text-black">{name != null ? `Products » ${name}` : "Popular"}</Text> */}
             <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold', color: 'black' }}>
                 Products
+                {/* <Text style={{ fontFamily: 'Inter-Medium', fontSize: hp(2.8) }}>{dataProduct.length > 0 ? (" » ") : ""}</Text> */}
                 <Text style={{ fontFamily: 'Inter-Medium', fontSize: hp(2.8) }}> » </Text>
                 <Text style={{ fontFamily: 'Inter-Medium', fontSize: hp(2.6) }}>
+                    {/* {dataProduct.length > 0 ? (name != null ? name : "Popular") : ("")} */}
                     {name != null ? name : "Popular"}
                 </Text>
             </Text>
 
             <View>
-                {showLoading ? (
-                    <Loading className="mt-20" />
-                ) : (
-                    dataProduct.length == 0 ?
-                        (
-                            id != null ?
-                                (
-                                    <View>
-                                        <Text style={{ fontFamily: 'Inter-Medium', color: 'black' }}>No data available</Text>
-                                    </View>
-                                ) :
-                                (
-                                    <MasonryList
-                                        data={productsPopular}
-                                        keyExtractor={(item) => item.id}
-                                        numColumns={2}
-                                        showsVerticalScrollIndicator={false}
-                                        renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
-                                        onEndReachedThreshold={0.1}
-                                    />
-                                )
-                        ) :
+                {
+                    dataProduct.length > 0 && id != null ?
                         (
                             <MasonryList
                                 data={dataProduct}
@@ -65,11 +56,32 @@ export default function Products({ activeCategory, products, productsPopular }) 
                                 renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
                                 onEndReachedThreshold={0.1}
                             />
+                        ) :
+                        (
+                            <View>
+                                {
+                                    productsPopular.length > 0 && id == null ?
+                                        (
+                                            <MasonryList
+                                                data={productsPopular}
+                                                keyExtractor={(item) => item.id}
+                                                numColumns={2}
+                                                showsVerticalScrollIndicator={false}
+                                                renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
+                                                onEndReachedThreshold={0.1}
+                                            />
+                                        ) :
+                                        (
+                                            <View>
+                                                <Text style={{ fontFamily: 'Inter-Medium', color: 'black' }}>No data product available</Text>
+                                            </View>
+                                        )
+                                }
+                            </View>
                         )
-                )
                 }
-            </View>
-        </View>
+            </View >
+        </View >
     )
 }
 
@@ -91,7 +103,7 @@ const ProductItem = ({ item, index, navigation }) => {
                     style={{ fontSize: hp(1.9), fontFamily: 'Inter-Bold' }}
                     className=" ml-2 text-neutral-600">
                     {
-                        item.name.length > 17 ? item.name.slice(0, 17) + "..." : item.name
+                        item.name.length > 16 ? item.name.slice(0, 16) + "..." : item.name
                     }
                 </Text>
             </Pressable>

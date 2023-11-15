@@ -68,6 +68,7 @@ export default function HomeScreen() {
             onlyOnce: false
         });
     }
+    
     const getDataProduct = () => {
         const dbRef = databaseRef(database, 'products');
 
@@ -103,10 +104,10 @@ export default function HomeScreen() {
                 const reversed = products.reverse();
                 setProductsPopular(reversed)
             } else {
-                console.log('Không có dữ liệu sản phẩm phổ biến.');
+                console.log('No data product popular.');
             }
         } catch (error) {
-            console.error('Lỗi khi lấy dữ liệu từ Firebase:', error);
+            console.error('Firebase Error: ', error);
         }
     }
 
@@ -129,13 +130,14 @@ export default function HomeScreen() {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
+        setActiveCategory('')
         getDataHome()
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);
     }, []);
 
-    let usernameClass = user.includes('merchant') ? "text-sky-500" : "text-green-500"
+    let usernameClass = user.includes('admin@foodapp') ? "text-sky-500" : "text-green-500"
     let searchClass = search.length > 0 ? " pr-[60px]" : "pr-[30px]"
     return (
         <View className="flex-1 bg-gray-200">
@@ -254,7 +256,7 @@ export default function HomeScreen() {
                 </View>
                 {/* Categories */}
                 <View>
-                    {categories.length > 0 && <Categories categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory} />}
+                    <Categories categories={categories} activeCategory={activeCategory} handleChangeCategory={handleChangeCategory} />
                 </View>
 
                 {/* Restaurants */}

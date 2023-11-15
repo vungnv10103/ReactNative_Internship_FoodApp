@@ -11,54 +11,66 @@ export default function Categories({ categories, activeCategory, handleChangeCat
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowLoading(false);
-        }, 2000);
+        }, 5000);
 
         return () => clearTimeout(timer);
     }, []);
+
+    if (showLoading) {
+        return (
+            <View className="mx-4 space-y-4">
+                <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Categories</Text>
+                <Loading className="mt-20" />
+            </View>
+        )
+    }
+
     return (
         <View className="mx-4 space-y-4">
             <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className=" text-black">Categories</Text>
+            
             <View>
                 {
-                    showLoading ?
+                    categories.length > 0 ? (
+                        <Animated.View entering={FadeInDown.duration(500).springify()}>
+                            <ScrollView
+                                horizontal
+                                className="space-x-4"
+                                showsHorizontalScrollIndicator={false}
+                                contentContainerStyle={{ paddingHorizontal: hp(1.5) }}
+                            >
+                                {
+                                    categories.map((cate, index) => {
+                                        let isActive = cate.id == activeCategory.id
+                                        let activeButtonClass = isActive ? ' bg-amber-400' : ' bg-white'
+                                        return (
+                                            <TouchableOpacity
+                                                key={index}
+                                                onPress={() => handleChangeCategory(cate)}
+                                                className="flex items-center space-y-1"
+                                            >
+                                                <View className={"rounded-full p-[5px]" + activeButtonClass}>
+                                                    <Image
+                                                        source={{ uri: cate.img }}
+                                                        style={{ width: hp(6.5), height: hp(6.5) }}
+                                                        className="rounded-full" />
+                                                </View>
+                                                <Text className="text-black" style={{ fontSize: hp(1.6), fontFamily: 'Inter-Medium' }}>
+                                                    {
+                                                        cate.name.length > 12 ? cate.name.slice(0, 12) + "..." : cate.name
+                                                    }
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )
+                                    })
+                                }
+                            </ScrollView>
+                        </Animated.View>
+                    ) :
                         (
-                            <Loading />
-                        ) :
-                        (
-                            <Animated.View entering={FadeInDown.duration(500).springify()}>
-                                <ScrollView
-                                    horizontal
-                                    className="space-x-4"
-                                    showsHorizontalScrollIndicator={false}
-                                    contentContainerStyle={{ paddingHorizontal: hp(1.5) }}
-                                >
-                                    {
-                                        categories.map((cate, index) => {
-                                            let isActive = cate.id == activeCategory.id
-                                            let activeButtonClass = isActive ? ' bg-amber-400' : ' bg-white'
-                                            return (
-                                                <TouchableOpacity
-                                                    key={index}
-                                                    onPress={() => handleChangeCategory(cate)}
-                                                    className="flex items-center space-y-1"
-                                                >
-                                                    <View className={"rounded-full p-[5px]" + activeButtonClass}>
-                                                        <Image
-                                                            source={{ uri: cate.img }}
-                                                            style={{ width: hp(6.5), height: hp(6.5) }}
-                                                            className="rounded-full" />
-                                                    </View>
-                                                    <Text className="text-black" style={{ fontSize: hp(1.6), fontFamily: 'Inter-Medium' }}>
-                                                        {
-                                                            cate.name.length > 12 ? cate.name.slice(0, 12) + "..." : cate.name
-                                                        }
-                                                    </Text>
-                                                </TouchableOpacity>
-                                            )
-                                        })
-                                    }
-                                </ScrollView>
-                            </Animated.View>
+                            <View>
+                                <Text style={{ fontFamily: 'Inter-Medium', color: 'black' }}>No data category available</Text>
+                            </View>
                         )
                 }
             </View>

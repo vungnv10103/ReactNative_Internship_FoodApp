@@ -9,6 +9,8 @@ import DetailProductByID from "./DetailProductByID";
 import ChatScreen from "./ChatScreen";
 import Filter from "./filter";
 import LocationScreen from "./LocationScreen";
+import ManageProduct from "./ManageProduct";
+import ListProductByIDCate from "./ListProductByIDCate";
 
 
 
@@ -24,4 +26,6 @@ export {
     ChatScreen,
     Filter,
     LocationScreen,
+    ManageProduct,
+    ListProductByIDCate,
 }
