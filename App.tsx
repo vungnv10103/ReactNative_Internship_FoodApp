@@ -3,7 +3,21 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { CustomHeader } from './src/components/index'
-import { LoginScreen, SignupScreen, HomeScreen, DetailProductByIDCate, DetailProductByID, BottomNav, AccountScreen, CartScreen, ChatScreen, Filter, LocationScreen } from './src/screens/index'
+import {
+  LoginScreen,
+  SignupScreen,
+  HomeScreen,
+  DetailProductByIDCate,
+  DetailProductByID,
+  BottomNav,
+  AccountScreen,
+  CartScreen,
+  ChatScreen,
+  Filter,
+  LocationScreen,
+  ManageProduct,
+  ListProductByIDCate
+} from './src/screens/index'
 const Stack = createNativeStackNavigator();
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import BottomSheet, { BottomSheetView, BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -25,6 +39,8 @@ export default function App() {
             <Stack.Screen name='Account' component={AccountScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />
+            <Stack.Screen name='ManageProduct' component={ManageProduct} options={{ headerShown: false }} />
+            <Stack.Screen name='ListProductByIDCate' component={ListProductByIDCate} options={{ headerShown: false }} />
             <Stack.Screen name='Location' component={LocationScreen} options={{ headerShown: true, headerTitle: 'Select location', headerTitleAlign: 'center' }} />
             <Stack.Group screenOptions={{ presentation: 'modal' }}>
               <Stack.Screen name='Filter' component={Filter} options={{ headerShown: false, presentation: 'modal' }} />

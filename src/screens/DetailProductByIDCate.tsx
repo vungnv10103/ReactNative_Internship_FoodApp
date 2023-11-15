@@ -6,7 +6,7 @@ import { HeartIcon, Square3Stack3DIcon, UsersIcon } from 'react-native-heroicons
 import Animated, { FadeInDown, FadeIn, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { storage, database, auth } from '../config/FirebaseConfig';
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
-import { useNavigation, Link } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 import { Products } from '../components';
 import ParallaxScrollView from '../components/ParallaxScrollView';
 import Icon, { Icons } from '../components/Icons';
@@ -116,7 +116,7 @@ export default function DetailProductByIDCate(props: any) {
         })
     }
 
-    const getAllProByIdCart = async (id: any) => {
+    const getAllProByIdCate = async (id: any) => {
         return new Promise<any[]>((resolve) => {
             const dbRef = databaseRef(database, 'products');
 
@@ -141,7 +141,7 @@ export default function DetailProductByIDCate(props: any) {
     const fetchData = async () => {
         // setLoading(false)
         const nameCategoryData = await getNameCategory(productSelected.idCate);
-        const productByIdCartData = await getAllProByIdCart(productSelected.idCate);
+        const productByIdCartData = await getAllProByIdCate(productSelected.idCate);
 
         const sameData = [{
             title: nameCategoryData,
@@ -188,7 +188,7 @@ export default function DetailProductByIDCate(props: any) {
             setQuantity(quantity + 1)
         }
     }
-    
+
     const getNewPrice = (oldPrice: number, discount: number, isFormat: boolean) => {
         const newPrice = oldPrice - (oldPrice * discount / 100)
         if (isFormat) {
@@ -357,7 +357,7 @@ export default function DetailProductByIDCate(props: any) {
                                         <Icon type={Icons.Ionicons} name="remove-outline" color='white' size={24} style={{}} />
                                     </Text>
                                 </TouchableOpacity>
-                                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black mx-4 text-lg'>{quantity}</Text>
+                                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black mx-2 text-lg'>{quantity}</Text>
                                 <TouchableOpacity
                                     onPress={() => handleQuantity('plus')}
                                 >

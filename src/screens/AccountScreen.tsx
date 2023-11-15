@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StatusBar } from 'react-native'
+import { View, Text, TouchableOpacity, StatusBar, ToastAndroid } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { storage, database, auth } from '../config/FirebaseConfig';
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get, update, set } from "firebase/database";
@@ -24,7 +24,7 @@ interface User {
 export default function AccountScreen(props: any) {
     const navigation = useNavigation();
 
-    const [currentUser, setUser] = useState<any>(null);
+    const [currentUser, setUser] = useState<User | null>();
     const [avatar, setAvatar] = useState('');
     const [email, setEmail] = useState<String | null>('');
 
@@ -34,17 +34,27 @@ export default function AccountScreen(props: any) {
     const [isAddProductVisible, setAddProductVisible] = useState(false);
 
 
+    const showToast = (message: any) => {
+        ToastAndroid.show("" + message, ToastAndroid.SHORT);
+    };
+
     const getUserData = async () => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setEmail(user.email)
-                setUser(user)
-            }
+        return new Promise<any>((resolve) => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    resolve(user)
+                }
+            })
         })
     }
 
+    const fetchData = async () => {
+        const dataUser = await getUserData()
+        setUser(dataUser)
+    }
+
     useEffect(() => {
-        getUserData()
+        fetchData()
     }, []);
 
 
@@ -89,16 +99,18 @@ export default function AccountScreen(props: any) {
                                     return currentData;
                                 }
                             });
+                            showToast('Thêm mới thành công!')
                             console.log('Thêm mới thành công!');
                         } catch (error) {
+                            showToast(`Thêm mới thất bại: ${error}`)
                             console.error('Thêm thất bại:', error);
                         }
                         setAddCategoryVisible(false)
-
                     })
                 }
             )
         } catch (error) {
+            showToast(`Error uploading image to Firebase Storage: ${error}`)
             console.error('Error uploading image to Firebase Storage', error);
         }
     }
@@ -129,6 +141,8 @@ export default function AccountScreen(props: any) {
             },
                 (error) => {
                     // Handle error
+                    showToast(error.message)
+                    console.log(error.code);
                 },
                 () => {
                     getDownloadURL(uploadTask.snapshot.ref).then(async (downLoadURL: any) => {
@@ -145,6 +159,7 @@ export default function AccountScreen(props: any) {
                         const newData = {
                             id: dataID,
                             idCate: idCate,
+                            idSeller: currentUser?.uid,
                             name: nameProduct,
                             description: description,
                             price: price,
@@ -162,15 +177,16 @@ export default function AccountScreen(props: any) {
                                     return currentData;
                                 }
                             });
+                            showToast('Thêm mới thành công!')
                             console.log('Thêm mới thành công!');
                             // update cate count
                             // updateQuantityProOfCate(idCate)
 
                         } catch (error) {
+                            showToast(`Thêm mới thất bại: ${error}`)
                             console.error('Thêm thất bại:', error);
                         }
                         setAddProductVisible(false)
-
                     })
                 }
             )
@@ -186,45 +202,61 @@ export default function AccountScreen(props: any) {
                 routes: [{ name: 'Login' }],
             });
         }).catch((error) => {
-            // An error happened.
+            showToast(error)
         });
     }
 
-    const isMerchant = email?.includes("merchant")
+    // const isMerchant = currentUser?.email?.includes("merchant")
+    const isAdmin = currentUser?.email.toLowerCase() === 'admin@foodapp.com'
 
     return (
         <View className="flex-1 bg-white">
             <StatusBar barStyle="light-content" />
             <View className="mx-5 space-y-4 pt-20">
-                <Text>{email}</Text>
-                {isMerchant ? (<View>
-                    <Animated.View
-                        className="w-full"
-                        entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        <TouchableOpacity
-                            className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
-                            onPress={() => { setAddCategoryVisible(true) }}>
-                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm thể loại</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
+                <Text>{currentUser?.email}</Text>
+                {isAdmin ? (
+                    <View>
+                        <Animated.View
+                            className="w-full"
+                            entering={FadeInDown.delay(200).duration(500).springify()}>
+                            <TouchableOpacity
+                                className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                                onPress={() => { setAddCategoryVisible(true) }}>
+                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm thể loại</Text>
+                            </TouchableOpacity>
+                        </Animated.View>
 
-                    <Animated.View
-                        className="w-full"
-                        entering={FadeInDown.delay(400).duration(1000).springify()}>
-                        <TouchableOpacity
-                            className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
-                            onPress={() => { setAddProductVisible(true) }}>
-                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm sản phẩm</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
-                </View>) : (<View>
-                </View>)}
+                        <Animated.View
+                            className="w-full"
+                            entering={FadeInDown.delay(200).duration(500).springify()}>
+                            <TouchableOpacity
+                                className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                                onPress={() => { setAddProductVisible(true) }}>
+                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm sản phẩm</Text>
+                            </TouchableOpacity>
+                        </Animated.View>
+                        <Animated.View
+                            className="w-full"
+                            entering={FadeInDown.delay(200).duration(500).springify()}>
+                            <TouchableOpacity
+                                className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                                onPress={() => props.navigation.navigate("ManageProduct")}>
+                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí sản phẩm</Text>
+                            </TouchableOpacity>
+                        </Animated.View>
+                    </View>
+                ) : (
+                    <View>
+                    </View>
+                )
+                }
 
+                {/* Logout */}
                 <Animated.View
                     className="w-full"
-                    entering={FadeInDown.delay(400).duration(1000).springify()}>
+                    entering={FadeInDown.delay(200).duration(500).springify()}>
                     <TouchableOpacity
-                        className="w-full bg-sky-400 p-3 rounded-2xl mb-3"
+                        className="w-full bg-sky-400 p-3 rounded-xl mb-3"
                         onPress={logout}>
                         <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Đăng xuất</Text>
                     </TouchableOpacity>
