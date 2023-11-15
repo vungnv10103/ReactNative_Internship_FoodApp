@@ -165,7 +165,7 @@ export default function HomeScreen() {
                             <View className="mt-1.5 flex-row"
                             >
                                 <Text style={{ fontFamily: "Inter-Bold", color: 'black' }}>Selected location</Text>
-                                <Icon name={'keyboard-arrow-down'} type={Icons.MaterialIcons} color='#00af80' />
+                                <Icon name={'keyboard-arrow-down'} type={Icons.MaterialIcons} color='#2dd4c0' />
                             </View>
                         </TouchableOpacity>
                     </View>

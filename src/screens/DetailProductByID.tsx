@@ -180,7 +180,7 @@ export default function DetailProductByID(props: any) {
             {/* back button */}
             <Animated.View entering={FadeIn.delay(200).duration(1000)} className="w-full absolute flex-row justify-between items-center pt-5">
                 <TouchableOpacity onPress={() => navigation.goBack()} className="p-1.5 rounded-full ml-5 bg-white">
-                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#fbbf24" />
+                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4c0" />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => { setIsFavourite(!isFavourite) }} className="p-1.5 rounded-full mr-5 bg-white">
                     <HeartIcon size={hp(3.5)} strokeWidth={4.5} color={isFavourite ? "red" : "gray"} />

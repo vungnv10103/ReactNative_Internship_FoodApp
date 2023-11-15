@@ -309,7 +309,7 @@ export default function DetailProductByIDCate(props: any) {
                                 <TouchableOpacity
                                     onPress={() => navigation.goBack()}
                                     className="p-2 rounded-full ml-5 bg-gray-100">
-                                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#fbbf24" />
+                                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4c0" />
                                 </TouchableOpacity>
                                 <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-black text-center">
                                     {productSelected.name.length > 17 ? productSelected.name.slice(0, 17) + "..." : productSelected.name}
@@ -446,12 +446,12 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     segmentText: {
-        color: '#6EE7B7',
+        color: '#2dd4c0',
         fontFamily: 'Inter-Medium',
         fontSize: 16,
     },
     segmentButtonActive: {
-        backgroundColor: '#6EE7B7',
+        backgroundColor: '#2dd4c0',
         paddingHorizontal: 16,
         paddingVertical: 6,
         borderRadius: 50,

@@ -21,7 +21,7 @@ export default function Products({ activeCategory, products, productsPopular }) 
         return () => clearTimeout(timer);
     }, []);
 
-    if (showLoading) {
+    if (products.length <= 0 || productsPopular.length <= 0) {
         return (
             <View className="mx-4 space-y-4">
                 <Text style={{ fontSize: hp(3), fontFamily: 'Inter-Bold' }} className="text-black">Products</Text>

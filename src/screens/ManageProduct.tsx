@@ -6,6 +6,9 @@ import { ref as databaseRef, onValue, query, orderByChild, get } from "firebase/
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { EditCategory, EditProduct } from '../components/form/index'
+import { ChevronLeftIcon, ClockIcon, FireIcon } from 'react-native-heroicons/outline';
+import Loading from '../components/Loading';
+
 
 interface Category {
     id: string,
@@ -83,16 +86,40 @@ export default function ManageProduct(props: any) {
 
     }
 
+
+
+    if (categories.length <= 0) {
+
+        return (
+            <View className='flex-1 justify-center items-center'>
+                <Loading size='large' />
+            </View>
+        )
+    }
+
     return (
         <View className="flex-1 bg-gray-200">
             <StatusBar barStyle="light-content" />
             <ScrollView
-                className="space-y-6 pt-1"
+                className="space-y-6 pt-4"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 50 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }>
+
+                <View className='flex-row items-center'>
+                    <TouchableOpacity
+                        onPress={() => navigation.goBack()}
+                        className="p-2 rounded-full ml-5 bg-gray-100">
+                        <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4c0" />
+                    </TouchableOpacity>
+
+                    <Text style={{ fontFamily: 'Inter-Bold' }}
+                        className='text-black text-xl mx-4'>
+                        Danh sách thể loại
+                    </Text>
+                </View>
 
                 {
                     categories.length > 0 ? (
@@ -102,10 +129,6 @@ export default function ManageProduct(props: any) {
                                 showsHorizontalScrollIndicator={false}
                                 contentContainerStyle={{ paddingHorizontal: hp(1.5) }}
                             >
-                                <Text style={{ fontFamily: 'Inter-Bold' }}
-                                    className='text-center text-black text-xl m-4'>
-                                    Danh sách thể loại
-                                </Text>
                                 {
                                     categories.map((cate, index) => {
                                         return (
