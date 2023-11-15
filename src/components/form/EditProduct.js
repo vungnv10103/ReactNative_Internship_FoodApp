@@ -9,7 +9,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue } from "firebase/database";
 
 
-export default function AddProduct({ visible, onClose, onSubmit }) {
+export default function EditProduct({ visible, onClose, onSubmit }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [idProduct, setIdProduct] = useState(uuid.v4())
     const [selectedCate, setSelected] = useState("");
@@ -115,7 +115,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
         <Modal visible={visible} animationType="fade" transparent={true}>
             <View style={styles.container}>
                 <View style={styles.dialog}>
-                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black text-center text-2xl py-2">Thêm mới sản phẩm</Text>
+                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black text-center text-xl py-2">Sửa thông tin sản phẩm</Text>
                     {/* { */}
                     {/* showData && dataCate.length > 0 ? ( */}
                     <View>
