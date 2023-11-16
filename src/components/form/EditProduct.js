@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -194,7 +194,7 @@ export default function EditProduct({ visible, onClose, onSubmit }) {
                                 <TouchableOpacity
                                     className=" bg-sky-400  py-2 px-3 rounded-lg mb-3 "
                                     onPress={handleSubmit}>
-                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm text-white text-center">Thêm mới</Text>
+                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm text-white text-center">Cập nhật</Text>
                                 </TouchableOpacity>
                             </>}
                         </Animated.View>

@@ -114,7 +114,10 @@ export default function ListProductByIDCate(props: any) {
                     </Text>
                 </View>
 
-                {productByIdCart.map((item, index) => <Text key={item.id}>{item.name}</Text>)}
+                {productByIdCart.map((item, index) => (<TouchableOpacity
+                    key={item.id}>
+                    <Text className='text-black'>{item.name}</Text>
+                </TouchableOpacity>))}
             </ScrollView>
 
         </View>

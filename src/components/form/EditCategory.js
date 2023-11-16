@@ -1,17 +1,29 @@
 import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
 import uuid from 'react-native-uuid';
 import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } from "firebase/storage";
 import { storage, database, auth } from '../config/FirebaseConfig';
 
-export default function EditCategory({ visible, onClose, onSubmit }) {
+export default function EditCategory({ visible, onClose, onSubmit, initialData }) {
     const [selectedImage, setSelectedImage] = useState(null);
-    const [idCate, setIdCate] = useState(uuid.v4())
-    const [nameCate, setNameCate] = useState("")
+    const [posCate, setPosCate] = useState(initialData?.pos || '')
+    const [idCate, setIdCate] = useState(initialData?.id || '')
+    const [nameCate, setNameCate] = useState(initialData?.name || '')
+    const [img, setImage] = useState(initialData?.img || '')
     const [loading, isLoading] = useState(false)
     const [progress, setProgress] = useState(0)
+
+    useEffect(() => {
+        if (visible) {
+            setIdCate(initialData.id || '');
+            setNameCate(initialData.name || '');
+            setImage(initialData.img || '');
+            setPosCate(initialData.pos || '');
+        }
+    }, [visible, initialData]);
+
 
     const clearForm = () => {
         setNameCate("")
@@ -27,11 +39,11 @@ export default function EditCategory({ visible, onClose, onSubmit }) {
         if (nameCate.length == 0 || nameCate == null) {
             alert("Nhập tên thể loại")
             return;
-        } else if (selectedImage == null) {
+        } else if (selectedImage == null && img.length <= 0) {
             alert("Vui lòng chọn ảnh")
             return;
         }
-        onSubmit(idCate, nameCate, selectedImage);
+        onSubmit(posCate, idCate, nameCate, selectedImage);
         clearForm()
     };
 
@@ -81,9 +93,25 @@ export default function EditCategory({ visible, onClose, onSubmit }) {
                     />
 
                     {/* Rest of the component */}
-                    {selectedImage && <Image
-                        className="w-36 h-36 my-3"
-                        source={{ uri: `${selectedImage.uri}` }} />}
+                    {/* {
+                        img != null ? <Image
+                            className="w-36 h-36 my-3"
+                            source={{ uri: img }} /> :
+                    } */}
+                    {
+                        img.length > 0 && selectedImage == null &&
+                        <Image
+                            className="w-36 h-36 my-3"
+                            source={{ uri: img }} />
+
+                    }
+                    {
+                        selectedImage != null &&
+                        <Image
+                            className="w-36 h-36 my-3"
+                            source={{ uri: selectedImage.uri }} />
+                    }
+
                     <Animated.View
                         entering={FadeInDown.delay(400).duration(1000).springify()}>
                         <TouchableOpacity
@@ -101,7 +129,7 @@ export default function EditCategory({ visible, onClose, onSubmit }) {
                                 <TouchableOpacity
                                     className=" bg-sky-400  py-2 px-3 rounded-lg mb-3 "
                                     onPress={handleSubmit}>
-                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm  text-white text-center">Thêm mới</Text>
+                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm  text-white text-center">Cập nhật</Text>
                                 </TouchableOpacity>
                             </>}
                         </Animated.View>

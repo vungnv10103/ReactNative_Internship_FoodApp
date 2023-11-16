@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -22,7 +22,8 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
     const [dataCate, setDataCate] = useState([])
     const [showData, setShowData] = useState(true);
 
-    const getDataCategory = () => {
+    const getDataCategory = async () => {
+
         const dbRef = databaseRef(database, 'categories');
         const dataFromFirebase = [];
         onValue(dbRef, (snapshot) => {
@@ -37,17 +38,17 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                 );
             });
             setDataCate(dataFromFirebase)
-
         }, {
             onlyOnce: true
         });
+
     }
     useEffect(() => {
         getDataCategory()
     }, [])
 
     const clearForm = () => {
-        // setDataCate(null)
+        // setDataCate([])
         setShowData(false);
         setSelected("")
         setNameProduct("")

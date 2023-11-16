@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, TextInput, StatusBar, Image, StyleSheet, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
 import Animated, { FadeIn, FadeInDown, FadeInUp } from 'react-native-reanimated';
 import ImagePicker from 'react-native-image-crop-picker';
