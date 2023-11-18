@@ -6,5 +6,6 @@ export {
     AddCategory,
     AddProduct,
     EditCategory,
-    EditProduct,
+    EditProduct
+
 }

@@ -8,23 +8,13 @@ import { AddCategory, AddProduct } from '../components/form/index';
 import uuid from 'react-native-uuid';
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useNavigation } from '@react-navigation/native'
+import { IUserInterface } from '../interfaces/index'
 
-interface Pro {
-    uid: string,
-}
-interface User {
-    uid: string,
-    email: string,
-    emailVerified: boolean,
-    providerData: Array<Pro>[
-    ]
-
-}
 
 export default function AccountScreen(props: any) {
     const navigation = useNavigation();
 
-    const [currentUser, setUser] = useState<User | null>();
+    const [currentUser, setUser] = useState<IUserInterface | null>();
     const [avatar, setAvatar] = useState('');
     const [email, setEmail] = useState<String | null>('');
 
@@ -216,34 +206,23 @@ export default function AccountScreen(props: any) {
                 <Text>{currentUser?.email}</Text>
                 {isAdmin ? (
                     <View>
-                        <Animated.View
-                            className="w-full"
-                            entering={FadeInDown.delay(200).duration(500).springify()}>
-                            <TouchableOpacity
-                                className="w-full bg-sky-400 p-3 rounded-xl mb-3"
-                                onPress={() => { setAddCategoryVisible(true) }}>
-                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm thể loại</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => { setAddCategoryVisible(true) }}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm thể loại</Text>
+                        </TouchableOpacity>
 
-                        <Animated.View
-                            className="w-full"
-                            entering={FadeInDown.delay(200).duration(500).springify()}>
-                            <TouchableOpacity
-                                className="w-full bg-sky-400 p-3 rounded-xl mb-3"
-                                onPress={() => { setAddProductVisible(true) }}>
-                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm sản phẩm</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                        <Animated.View
-                            className="w-full"
-                            entering={FadeInDown.delay(200).duration(500).springify()}>
-                            <TouchableOpacity
-                                className="w-full bg-sky-400 p-3 rounded-xl mb-3"
-                                onPress={() => props.navigation.navigate("ManageProduct")}>
-                                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí sản phẩm</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => { setAddProductVisible(true) }}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thêm sản phẩm</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => props.navigation.navigate("ManageProduct")}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí sản phẩm</Text>
+                        </TouchableOpacity>
                     </View>
                 ) : (
                     <View>
@@ -252,15 +231,13 @@ export default function AccountScreen(props: any) {
                 }
 
                 {/* Logout */}
-                <Animated.View
-                    className="w-full"
-                    entering={FadeInDown.delay(200).duration(500).springify()}>
-                    <TouchableOpacity
-                        className="w-full bg-sky-400 p-3 rounded-xl mb-3"
-                        onPress={logout}>
-                        <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Đăng xuất</Text>
-                    </TouchableOpacity>
-                </Animated.View>
+
+                <TouchableOpacity
+                    className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                    onPress={logout}>
+                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Đăng xuất</Text>
+                </TouchableOpacity>
+
             </View>
 
             <AddCategory

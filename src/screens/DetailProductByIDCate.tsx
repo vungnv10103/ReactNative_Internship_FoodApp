@@ -13,27 +13,13 @@ import Icon, { Icons } from '../components/Icons';
 import { themeColors } from '../theme';
 import ProductsRecommend from '../components/productRecommend';
 import Loading from '../components/Loading';
+import { IProductInterface } from '../interfaces/index'
 
-
-
-interface Product {
-    id: string;
-    idCate: string;
-    name: string;
-    img: string;
-    description: string;
-    price: number;
-    sale: number;
-    sold: number;
-    status: number;
-}
 
 interface SameDataProduct {
     title: string;
-    data: Product[];
+    data: IProductInterface[];
 }
-
-
 
 export default function DetailProductByIDCate(props: any) {
     const navigation = useNavigation()
@@ -69,9 +55,9 @@ export default function DetailProductByIDCate(props: any) {
     }, []);
 
 
-    const [productSelected, setProductSelected] = useState<Product>(props.route.params)
+    const [productSelected, setProductSelected] = useState<IProductInterface>(props.route.params)
 
-    const [productByIdCart, setProductByIdCart] = useState<Product[]>([])
+    const [productByIdCart, setProductByIdCart] = useState<IProductInterface[]>([])
     const [flagProduct, setFlagProduct] = useState(true);
     const [nameCategory, setNameCategory] = useState('')
     const [flagNameCate, setFlagNameCate] = useState(false);
@@ -274,7 +260,7 @@ export default function DetailProductByIDCate(props: any) {
 
 
     const renderItem: ListRenderItem<any> = ({ item, index }) => (
-        <ProductsRecommend productRecommend={item} />
+        <ProductsRecommend productRecommend={item} goScreen={"DetailProductByID"} />
     )
 
     let classMinusBtn = quantity <= 1 ? "bg-teal-100" : "bg-teal-400"

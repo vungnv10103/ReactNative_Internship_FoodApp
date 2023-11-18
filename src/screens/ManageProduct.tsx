@@ -7,28 +7,18 @@ import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } 
 import uuid from 'react-native-uuid';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { EditCategory, EditProduct } from '../components/form/index'
+import { EditCategory } from '../components/form/index'
 import { ChevronLeftIcon, ClockIcon, FireIcon } from 'react-native-heroicons/outline';
 import Loading from '../components/Loading';
-
-
-interface Category {
-    pos: string,
-    id: string,
-    name: string,
-    img: string
-}
-interface MyImage {
-    uri: string
-}
+import { ICategoryInterface } from '../interfaces/index'
 
 export default function ManageProduct(props: any) {
 
     const navigation = useNavigation();
 
     const [refreshing, setRefreshing] = React.useState(false);
-    const [categories, setCategories] = useState<Category[]>([]);
-    const [categorySelected, setCategorySelected] = useState<Category>({
+    const [categories, setCategories] = useState<ICategoryInterface[]>([]);
+    const [categorySelected, setCategorySelected] = useState<ICategoryInterface>({
         pos: '',
         id: '',
         name: '',
@@ -41,7 +31,7 @@ export default function ManageProduct(props: any) {
     const [isEditProductVisible, setEditProductVisible] = useState(false);
 
 
-    const handleChangeCategory = (category: Category | React.SetStateAction<string>) => {
+    const handleChangeCategory = (category: ICategoryInterface | React.SetStateAction<string>) => {
         // setActiveCategory(category.toString())
         props.navigation.navigate("ListProductByIDCate", category)
     }
@@ -93,7 +83,7 @@ export default function ManageProduct(props: any) {
         ToastAndroid.show("" + message, ToastAndroid.SHORT);
     };
 
-    const onEditCate = async (category: Category) => {
+    const onEditCate = async (category: ICategoryInterface) => {
         setCategorySelected(category)
         // showToast(category.name)
         setEditCategoryVisible(true)
@@ -125,7 +115,7 @@ export default function ManageProduct(props: any) {
             });
     }
 
-    const onDeleteCategory = (category: Category) => {
+    const onDeleteCategory = (category: ICategoryInterface) => {
         return Alert.alert(
             "Bạn có chắc chắn muốn xoá?",
             "Thể loại sẽ mất nếu bạn xoá.",
@@ -143,7 +133,7 @@ export default function ManageProduct(props: any) {
         );
     }
 
-    const updateCategory = async (updateData: Category) => {
+    const updateCategory = async (updateData: ICategoryInterface) => {
         const dbRef = `categories/${updateData.pos}`;
         const dataRef = databaseRef(database, dbRef);
         try {
@@ -218,27 +208,27 @@ export default function ManageProduct(props: any) {
     return (
         <View className="flex-1 bg-gray-200">
             <StatusBar barStyle="light-content" />
+
+            <View className='flex-row items-center my-3'>
+                <TouchableOpacity
+                    onPress={() => navigation.goBack()}
+                    className="p-2 rounded-full ml-5 bg-gray-100">
+                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4c0" />
+                </TouchableOpacity>
+
+                <Text style={{ fontFamily: 'Inter-Bold' }}
+                    className='text-black text-xl mx-4'>
+                    Danh sách thể loại
+                </Text>
+            </View>
+
             <ScrollView
                 className="space-y-6 pt-4"
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 50 }}
+                contentContainerStyle={{ paddingBottom: 30 }}
                 refreshControl={
                     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                 }>
-
-                <View className='flex-row items-center'>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        className="p-2 rounded-full ml-5 bg-gray-100">
-                        <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4c0" />
-                    </TouchableOpacity>
-
-                    <Text style={{ fontFamily: 'Inter-Bold' }}
-                        className='text-black text-xl mx-4'>
-                        Danh sách thể loại
-                    </Text>
-                </View>
-
                 {
                     categories.length > 0 ? (
                         <Animated.View entering={FadeInDown.duration(500).springify()}>
@@ -298,11 +288,6 @@ export default function ManageProduct(props: any) {
                     onSubmit={handleEditCategorySubmit}
                     initialData={categorySelected}
 
-                />
-                <EditProduct
-                    visible={isEditProductVisible}
-                    onClose={() => setEditProductVisible(false)}
-                    onSubmit={handleEditProductSubmit}
                 />
             </ScrollView>
 

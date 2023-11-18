@@ -18,6 +18,8 @@ import {
   ManageProduct,
   ListProductByIDCate
 } from './src/screens/index'
+
+import { EditProduct } from './src/components/form';
 const Stack = createNativeStackNavigator();
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import BottomSheet, { BottomSheetView, BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
@@ -40,6 +42,7 @@ export default function App() {
             <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />
             <Stack.Screen name='ManageProduct' component={ManageProduct} options={{ headerShown: false }} />
+            <Stack.Screen name='EditProduct' component={EditProduct} options={{ headerShown: false }} />
             <Stack.Screen name='ListProductByIDCate' component={ListProductByIDCate} options={{ headerShown: false }} />
             <Stack.Screen name='Location' component={LocationScreen} options={{ headerShown: true, headerTitle: 'Select location', headerTitleAlign: 'center' }} />
             <Stack.Group screenOptions={{ presentation: 'modal' }}>

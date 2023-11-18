@@ -7,9 +7,6 @@ import { database, auth } from '../config/FirebaseConfig';
 import { ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 
 
-
-
-
 export type Ref = BottomSheetModal;
 
 interface Category {
