@@ -110,7 +110,26 @@ export default function ListProductByIDCate(props: any) {
             </View>
 
             <Text style={{ fontFamily: 'Inter-Bold' }} className='text-center text-black text-lg'>{categorySelected.name}</Text>
-            <ScrollView
+            {
+                productByIdCart.length > 0 ?
+                    (
+                        <FlatList
+                            contentContainerStyle={{ paddingTop: 16, paddingBottom: 30 }}
+                            keyExtractor={item => item.id}
+                            showsVerticalScrollIndicator={false}
+                            data={productByIdCart}
+                            renderItem={({ item }) => <ProductsRecommend key={item.id} productRecommend={item} goScreen={'EditProduct'} />}
+                            refreshControl={<RefreshControl colors={["#498627", "#496727"]} refreshing={refreshing} onRefresh={onRefresh} />}
+                        />
+                    ) :
+                    (
+                        <View className='flex-1 justify-center items-center'>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-lg text-black'>No data avaliable</Text>
+                        </View>
+                    )
+            }
+
+            {/* <ScrollView
                 className="space-y-6 pt-4"
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 30 }}
@@ -134,7 +153,7 @@ export default function ListProductByIDCate(props: any) {
                         )
                 }
 
-            </ScrollView >
+            </ScrollView > */}
 
         </View >
     )

@@ -1,10 +1,11 @@
 import { View, Text, ScrollView, StatusBar, Image, TouchableOpacity, FlatList, Pressable, SectionList, ListRenderItem, StyleSheet, ToastAndroid } from 'react-native'
 import React, { useState, useRef, useEffect, useLayoutEffect } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { ChevronLeftIcon, ClockIcon, FireIcon } from 'react-native-heroicons/outline';
+import { ChevronLeftIcon, ShoppingCartIcon, ClockIcon, FireIcon } from 'react-native-heroicons/outline';
 import { HeartIcon, Square3Stack3DIcon, UsersIcon } from 'react-native-heroicons/solid';
 import Animated, { FadeInDown, FadeIn, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { storage, database, auth } from '../config/FirebaseConfig';
+import { onAuthStateChanged } from "firebase/auth";
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 import { useNavigation } from '@react-navigation/native'
 import { Products } from '../components';
@@ -13,7 +14,8 @@ import Icon, { Icons } from '../components/Icons';
 import { themeColors } from '../theme';
 import ProductsRecommend from '../components/productRecommend';
 import Loading from '../components/Loading';
-import { IProductInterface } from '../interfaces/index'
+import { IUserInterface, IProductInterface } from '../interfaces/index'
+import uuid from 'react-native-uuid';
 
 
 interface SameDataProduct {
@@ -27,27 +29,29 @@ export default function DetailProductByIDCate(props: any) {
 
     useLayoutEffect(() => {
         navigation.setOptions({
+
             headerTransparent: true,
-            headerTitle: () => (<Text>Hehehe</Text>),
+            // headerTitle: () => (<Text>Hehehe</Text>),
+            headerTitle: '',
             headerTintColor: 'black',
             headerLeft: () => (
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
-                    className="p-2 rounded-full ml-5 bg-gray-100">
-                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#fbbf24" />
+                    className="p-2 rounded-full ml-1 mt-3 bg-gray-100">
+                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4bf" />
                 </TouchableOpacity>
             ),
             headerRight: () => (
-                <View>
+                <View className='flex-row'>
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
-                        className="p-2 rounded-full ml-5 bg-gray-100">
+                        className="p-2 rounded-full mr-1 bg-gray-100">
                         <HeartIcon size={hp(3.5)} strokeWidth={4.5} color={isFavourite ? "red" : "gray"} />
                     </TouchableOpacity>
                     <TouchableOpacity
                         onPress={() => setIsFavourite(!isFavourite)}
-                        className="p-2 rounded-full mr-5 bg-gray-100">
-                        <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#fbbf24" />
+                        className="p-2 rounded-full bg-gray-100">
+                        <ShoppingCartIcon size={hp(3.5)} strokeWidth={2} color="#2dd4bf" />
                     </TouchableOpacity>
                 </View>
             ),
@@ -55,6 +59,7 @@ export default function DetailProductByIDCate(props: any) {
     }, []);
 
 
+    const [currentUser, setCurrentUser] = useState<IUserInterface>()
     const [productSelected, setProductSelected] = useState<IProductInterface>(props.route.params)
 
     const [productByIdCart, setProductByIdCart] = useState<IProductInterface[]>([])
@@ -126,6 +131,8 @@ export default function DetailProductByIDCate(props: any) {
 
     const fetchData = async () => {
         // setLoading(false)
+        const userData = await getUserData();
+        setCurrentUser(userData)
         const nameCategoryData = await getNameCategory(productSelected.idCate);
         const productByIdCartData = await getAllProByIdCate(productSelected.idCate);
 
@@ -140,6 +147,74 @@ export default function DetailProductByIDCate(props: any) {
         }, 3000);
 
     };
+
+    const getDateTime = () => {
+        let dateTime = new Date()
+        let ngay = dateTime.getDate();
+        let thang = dateTime.getMonth() + 1;
+        let nam = dateTime.getFullYear();
+
+        let gio = dateTime.getHours();
+        let phut = dateTime.getMinutes();
+        let giay = dateTime.getSeconds();
+        let miliGiay = dateTime.getMilliseconds();
+        let date = `${ngay}/${thang}/${nam}`
+        let time = `${gio}:${phut}:${giay}.${miliGiay}`
+        return `${date}-${time}`
+    }
+
+
+    const getUserData = async () => {
+        return new Promise<any>((resolve) => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    resolve(user)
+                }
+            })
+        })
+    }
+
+    const addToCart = async () => {
+        let invoiceID = uuid.v4();
+        let idUser = currentUser?.uid;
+        let idProduct = productSelected.id;
+        let currentTime = getDateTime()
+
+        try {
+            const dbRef = `carts/${idUser}`;
+            const dataRef = databaseRef(database, dbRef);
+
+            // get key
+            const newDataRef = push(dataRef);
+            const dataID = newDataRef.key;
+            const newData = {
+                id: dataID,
+                datetime: currentTime,
+                idUser: idUser,
+                idProduct: idProduct,
+                quantity: quantity,
+                status: 'incart',
+                notes: ''
+            };
+            try {
+                await runTransaction(dataRef, (currentData) => {
+                    if (!currentData) {
+                        return [newData];
+                    } else {
+                        currentData.push(newData);
+                        return currentData;
+                    }
+                });
+                showToast('Đã thêm vào giỏ hàng!')
+                console.log('Đã thêm vào giỏ hàng!');
+            } catch (error) {
+                showToast(`Thêm vào giỏ hàng thất bại: ${error}`)
+                console.error('Thêm vào giỏ hàng thất bại:', error);
+            }
+        } catch (error) {
+            console.error('Firebase: ', error);
+        }
+    }
 
     useEffect(() => {
         fetchData()
@@ -251,6 +326,17 @@ export default function DetailProductByIDCate(props: any) {
 
     const onScroll = (event: any) => {
         const y = event.nativeEvent.contentOffset.y;
+        if (y >= 35) {
+            // Hiden header
+            navigation.setOptions({
+                headerShown: false,
+            })
+        } else {
+            // Show header
+            navigation.setOptions({
+                headerShown: true,
+            })
+        }
         if (y > 200) {
             opacity.value = withTiming(1);
         } else {
@@ -366,7 +452,7 @@ export default function DetailProductByIDCate(props: any) {
                             <View className='flex items-center mx-5 mt-5'>
                                 <TouchableOpacity
                                     className='w-full bg-teal-400 p-2.5 rounded-lg  mx-14'
-                                    onPress={showDataTemp}
+                                    onPress={addToCart}
                                 >
                                     <Text style={{ fontFamily: "Inter-Bold" }} className='text-white text-lg uppercase text-center'>Add to cart</Text>
                                 </TouchableOpacity>

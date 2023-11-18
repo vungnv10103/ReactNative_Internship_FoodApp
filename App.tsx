@@ -34,7 +34,7 @@ export default function App() {
             <Stack.Screen name='Login' component={LoginScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Signup' component={SignupScreen} options={{ headerShown: false }} />
             <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
-            <Stack.Screen name='DetailProductByIDCate' component={DetailProductByIDCate} options={{ headerShown: false }} />
+            <Stack.Screen name='DetailProductByIDCate' component={DetailProductByIDCate} options={{ headerShown: true, headerBackVisible: false }} />
             <Stack.Screen name='DetailProductByID' component={DetailProductByID} options={{ headerShown: false }} />
             <Stack.Screen name='BottomNav' component={BottomNav} options={{ headerShown: false }} />
             {/* <Stack.Screen name='BottomNav' component={BottomNav} options={{ header: () => <CustomHeader show={true} /> }} /> */}

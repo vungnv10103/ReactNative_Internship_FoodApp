@@ -85,7 +85,7 @@ export default function EditProduct(props: any) {
         console.log(message);
     }
 
-    const handleClose = () => { }
+    const handleClose = () => { navigation.goBack() }
 
 
     const updateProduct = async (updateData: IProductInterface) => {

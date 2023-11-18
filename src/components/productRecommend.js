@@ -17,20 +17,22 @@ export default function ProductsRecommend({ productRecommend, goScreen }) {
     )
 }
 
-function formatMoney(price) {
-    const valuePrice = parseFloat(price)
-    if (valuePrice >= 1000) {
-        return valuePrice.toLocaleString('vi-VN') + " đ";
+const formatMoney = (price) => {
+    if (price >= 1000) {
+        return price.toLocaleString('vi-VN') + " đ";
     } else {
-        return valuePrice.toString() + " đ";
+        return price.toString() + " đ";
     }
 }
 
-const getNewPrice = (oldPrice, discount) => {
-    const valueOldPrice = parseFloat(oldPrice)
-    const valueDiscount = parseFloat(discount)
-    const newPrice = valueOldPrice - (valueOldPrice * valueDiscount / 100)
-    return formatMoney(newPrice)
+const getNewPrice = (oldPrice, discount, isFormat) => {
+    const newPrice = parseFloat(oldPrice) - (parseFloat(oldPrice) * parseFloat(discount) / 100)
+    if (isFormat) {
+        return formatMoney(newPrice)
+    }
+    else {
+        return newPrice
+    }
 }
 
 const showToast = (message) => {
@@ -110,12 +112,12 @@ const Item = ({ item, navigation, goScreen }) => (
                             <View className='flex-row items-center'>
                                 <Image className="h-4 w-4" source={require('./../assets/images/sale_tag.png')} />
                                 <Text style={{ fontFamily: "Inter-Bold" }} className='line-through text-red-600 text-sm mx-1'>
-                                    {formatMoney(item.price)}
+                                    {getNewPrice(item.price, item.sale, true)}
                                 </Text>
                             </View>
                         ) : (<View></View>)}
                         <Text style={{ fontFamily: "Inter-Bold" }} className='text-black text-base'>
-                            {getNewPrice(item.price, item.sale)}
+                            {getNewPrice(item.price, item.sale, true)}
                         </Text>
                     </View>
                 </View>
