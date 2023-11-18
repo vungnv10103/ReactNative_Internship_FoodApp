@@ -6,7 +6,7 @@ import Loading from './Loading';
 import MasonryList from '@react-native-seoul/masonry-list';
 import { useNavigation } from '@react-navigation/native';
 
-export default function Products({ activeCategory, products, productsPopular }) {
+export default function Products({ activeCategory, products, productsPopular, fetchNextPage, ListEndLoader }) {
     const navigation = useNavigation()
     const { id, name } = activeCategory
     // console.log(id, name);
@@ -54,7 +54,9 @@ export default function Products({ activeCategory, products, productsPopular }) 
                                 numColumns={2}
                                 showsVerticalScrollIndicator={false}
                                 renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
-                                onEndReachedThreshold={0.1}
+                                // onEndReached={fetchNextPage}
+                                onEndReachedThreshold={0.8}
+                            // ListFooterComponent={ListEndLoader} // Loader when loading next page.
                             />
                         ) :
                         (
@@ -68,7 +70,9 @@ export default function Products({ activeCategory, products, productsPopular }) 
                                                 numColumns={2}
                                                 showsVerticalScrollIndicator={false}
                                                 renderItem={({ item, i }) => <ProductItem item={item} index={i} navigation={navigation} />}
-                                                onEndReachedThreshold={0.1}
+                                                // onEndReached={fetchNextPage}
+                                                onEndReachedThreshold={0.8}
+                                            // ListFooterComponent={ListEndLoader} // Loader when loading next page.
                                             />
                                         ) :
                                         (

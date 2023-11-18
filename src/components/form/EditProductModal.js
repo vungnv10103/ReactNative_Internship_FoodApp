@@ -7,9 +7,9 @@ import { getDownloadURL, ref as storageRef, uploadBytes, uploadBytesResumable } 
 import { storage, database, auth } from '../../config/FirebaseConfig';
 import { SelectList } from 'react-native-dropdown-select-list'
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue } from "firebase/database";
+import Loading from '../Loading';
 
-
-export default function AddProduct({ visible, onClose, onSubmit }) {
+export default function EditProductModal({ visible, onClose, onSubmit }) {
     const [selectedImage, setSelectedImage] = useState(null);
     const [idProduct, setIdProduct] = useState(uuid.v4())
     const [selectedCate, setSelected] = useState("");
@@ -22,8 +22,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
     const [dataCate, setDataCate] = useState([])
     const [showData, setShowData] = useState(true);
 
-    const getDataCategory = async () => {
-
+    const getDataCategory = () => {
         const dbRef = databaseRef(database, 'categories');
         const dataFromFirebase = [];
         onValue(dbRef, (snapshot) => {
@@ -38,17 +37,18 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                 );
             });
             setDataCate(dataFromFirebase)
-        }, {
-            onlyOnce: true
-        });
 
+        }, {
+            onlyOnce: false
+        });
     }
+
     useEffect(() => {
         getDataCategory()
     }, [])
 
     const clearForm = () => {
-        // setDataCate([])
+        // setDataCate(null)
         setShowData(false);
         setSelected("")
         setNameProduct("")
@@ -63,7 +63,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
 
 
     const handleSubmit = async () => {
-        isLoading(true)
+
         if (selectedCate == null || selectedCate.length == 0) {
             alert("Chưa chọn thể loại")
             return
@@ -88,7 +88,6 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
         // })
         onSubmit(selectedCate, idProduct, nameProduct, description, price, selectedImage);
         clearForm()
-        isLoading(false)
     };
 
 
@@ -117,7 +116,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
         <Modal visible={visible} animationType="fade" transparent={true}>
             <View style={styles.container}>
                 <View style={styles.dialog}>
-                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black text-center text-2xl py-2">Thêm mới sản phẩm</Text>
+                    <Text style={{ fontFamily: 'Inter-Medium' }} className="text-black text-center text-xl py-2">Sửa thông tin sản phẩm</Text>
                     {/* { */}
                     {/* showData && dataCate.length > 0 ? ( */}
                     <View>
@@ -161,8 +160,8 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                     <TextInput
                         className="text-black p-3 rounded border-gray-300 border"
                         style={{ fontFamily: 'Inter-Medium' }}
-                        value={description}
-                        // value={`${nameProduct} descriptions`}
+                        // value={description}
+                        value={`${nameProduct} descriptions`}
                         onChangeText={(text) => setDescription(text)}
                     />
 
@@ -196,7 +195,7 @@ export default function AddProduct({ visible, onClose, onSubmit }) {
                                 <TouchableOpacity
                                     className=" bg-sky-400  py-2 px-3 rounded-lg mb-3 "
                                     onPress={handleSubmit}>
-                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm text-white text-center">Thêm mới</Text>
+                                    <Text style={{ fontFamily: 'Inter-Bold' }} className="text-sm text-white text-center">Cập nhật</Text>
                                 </TouchableOpacity>
                             </>}
                         </Animated.View>
