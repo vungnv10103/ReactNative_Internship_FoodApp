@@ -11,6 +11,7 @@ import Filter from "./filter";
 import LocationScreen from "./LocationScreen";
 import ManageProduct from "./ManageProduct";
 import ListProductByIDCate from "./ListProductByIDCate";
+import PaymentScreen from "./PaymentScreen";
 
 
 
@@ -28,4 +29,5 @@ export {
     LocationScreen,
     ManageProduct,
     ListProductByIDCate,
+    PaymentScreen,
 }

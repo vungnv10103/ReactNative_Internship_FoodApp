@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { View, Text, StatusBar, Image, TouchableOpacity, Dimensions, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { ChevronLeftIcon, TrashIcon, ShoppingBagIcon } from 'react-native-heroicons/outline';
@@ -17,7 +17,6 @@ export default function CartScreen(props: any) {
     const navigation = useNavigation();
     const { updateCartItemsCount } = useCart();
 
-    const [toggleCheckBox, setToggleCheckBox] = useState(false)
     const [currentUser, setUser] = useState<IUserInterface | null>();
     const [dataProduct, setDataProduct] = useState<IProductInterface | null>();
     const [totalQuantity, setTotalQuantity] = useState<string>('');
@@ -60,9 +59,9 @@ export default function CartScreen(props: any) {
                 const childKey = childSnapshot.key;
                 const childData = childSnapshot.val();
                 // console.log(JSON.stringify(childData, null, 2));
-                if (childData.status === 'incart') {
-                    childData['pos'] = childKey
-                    cartData.push(childData);
+                childData['pos'] = childKey
+                cartData.push(childData);
+                if (childData.status === 'payment') {
                     totalQuan += childData.quantity
                 }
             });
@@ -110,20 +109,44 @@ export default function CartScreen(props: any) {
                 console.error('Error deleting data:', error);
             });
     }
+    const handlePayment = (itemSelected: ICartInterface) => {
+        props.navigation.navigate('Payment', { itemSelected });
+    }
+
+
+    const showAlert = (message: string) => {
+        return Alert.alert(
+            "Thông báo !",
+            message,
+            [
+                {
+                    text: "Oke",
+                    onPress: () => {
+
+                    },
+                },
+                // {
+                //     text: "Quay lại",
+                // },
+            ]
+        );
+    }
 
     const renderHiddenItem = ({ item }: { item: ICartInterface }) => (
         <View className='flex-1 flex-row justify-end p-2'>
             <TouchableOpacity
                 className='bg-red-300 justify-center items-center'
                 style={{ width: Dimensions.get('window').width / 6 }}
+                onLongPress={() => showAlert('Bạn sẽ chỉ mua sản phẩm này thay vì toàn bộ giỏ hàng')}
                 onPress={() => {
-                    //navigation.navigate('EditScreen', { item });
+                    handlePayment(item);
                 }}>
                 <ShoppingBagIcon size={hp(3.5)} strokeWidth={1.5} color="#fff" />
             </TouchableOpacity>
             <TouchableOpacity
                 className='justify-center items-center'
                 style={{ backgroundColor: 'orangered', width: Dimensions.get('window').width / 6 }}
+                onLongPress={() => showAlert('Sản phẩm sẽ mất khỏi giỏ hàng')}
                 onPress={() => {
                     handleDeleteCart(item);
                 }}>
@@ -132,6 +155,16 @@ export default function CartScreen(props: any) {
             </TouchableOpacity>
         </View>
     );
+
+    const handleStatus = (selected: boolean, itemSelected: ICartInterface) => {
+        const updates: { [key: string]: string } = {};
+        updates[`carts/${itemSelected.idUser}/${itemSelected.pos}/status`] = selected ? 'payment' : 'incart';
+        try {
+            update(databaseRef(database), updates);
+        } catch (error) {
+            console.error('Cập nhật thất bại:', error);
+        }
+    }
 
     const handleQuantity = (type: string, itemSelected: ICartInterface) => {
         const updates: { [key: string]: number } = {};
@@ -197,18 +230,14 @@ export default function CartScreen(props: any) {
                 </TouchableOpacity>
             </View>
 
-
-        </View>
-    );
-    const renderItemOld = ({ item }: { item: ICartInterface }) => (
-        <View style={{ backgroundColor: 'white', padding: 20, borderBottomWidth: 0.5, borderBottomColor: '#ccc' }}>
-            <Text className='text-black'>{item.id}</Text>
-            <CheckBox
-                style={{}}
-                disabled={false}
-                value={toggleCheckBox}
-                onValueChange={(newValue) => setToggleCheckBox(newValue)}
-            />
+            <View className=''>
+                <CheckBox
+                    tintColors={{}}
+                    disabled={false}
+                    value={item.status === 'payment'}
+                    onValueChange={(newValue) => handleStatus(newValue, item)}
+                />
+            </View>
         </View>
     );
 
@@ -246,7 +275,16 @@ export default function CartScreen(props: any) {
                             >
                                 <TouchableOpacity
                                     style={{ backgroundColor: '#b00020' }}
-                                    className="flex-row w-full p-3 rounded-lg mb-3 justify-between">
+                                    className="flex-row w-full p-3 rounded-lg mb-3 justify-between"
+                                    onPress={() => {
+                                        if (parseInt(totalQuantity) > 0) {
+                                            props.navigation.navigate('Payment', { dataCart })
+                                        }
+                                        else {
+                                            showAlert('Bạn cần chọn sản phẩm')
+                                        }
+                                    }}
+                                >
                                     <Text style={{ fontFamily: 'Inter-Bold' }} className='text-white text-lg'>{totalQuantity}</Text>
                                     <Text style={{ fontFamily: 'Inter-Bold' }} className='text-white text-lg'>Trang thanh toán</Text>
                                     <Text style={{ fontFamily: 'Inter-Bold' }} className='text-white text-lg'>{totalPrice} đ</Text>

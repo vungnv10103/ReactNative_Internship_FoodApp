@@ -15,7 +15,8 @@ import {
   Filter,
   LocationScreen,
   ManageProduct,
-  ListProductByIDCate
+  ListProductByIDCate,
+  PaymentScreen
 } from './src/screens/index'
 
 import { CartProvider } from './src/screens/CartProvider';
@@ -43,6 +44,7 @@ export default function App() {
               {/* </CartProvider> */}
               <Stack.Screen name='Account' component={AccountScreen} options={{ headerShown: false }} />
               <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
+              <Stack.Screen name='Payment' component={PaymentScreen} options={{ headerShown: false }} />
               <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />
               <Stack.Screen name='ManageProduct' component={ManageProduct} options={{ headerShown: false }} />
               <Stack.Screen name='EditProduct' component={EditProduct} options={{ headerShown: false }} />
