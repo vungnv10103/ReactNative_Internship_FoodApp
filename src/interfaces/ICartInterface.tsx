@@ -1,4 +1,5 @@
 export interface ICartInterface {
+    pos: string,
     id: string,
     datetime: string,
     idUser: string,

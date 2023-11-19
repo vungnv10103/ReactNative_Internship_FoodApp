@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { ToastAndroid } from 'react-native';
+import { database, auth } from '../config/FirebaseConfig';
+import { onAuthStateChanged } from 'firebase/auth';
+import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 import HomeScreen from './HomeScreen';
 import CartScreen from './CartScreen';
 import AccountScreen from './AccountScreen';
 import Icon, { Icons } from '../components/Icons';
+import { useCart } from './CartProvider';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 const Tab = createMaterialBottomTabNavigator();
 
@@ -20,10 +25,58 @@ const TabArr = [
 
 
 export default function BottomNav() {
+
+    // const [currentUser, setUser] = useState(null);
+    // const [dataCart, setDataCart] = useState();
+
+
+    // const getUserData = async () => {
+    //     return new Promise < any > ((resolve) => {
+    //         onAuthStateChanged(auth, (user) => {
+    //             if (user) {
+    //                 resolve(user)
+    //             }
+    //         })
+    //     })
+    // }
+
+    // const getDataCart = (idUser) => {
+    //     const dbRef = databaseRef(database, `carts/${idUser}`);
+    //     onValue(dbRef, (snapshot) => {
+    //         const cartData = [];
+    //         snapshot.forEach((childSnapshot) => {
+    //             const childKey = childSnapshot.key;
+    //             const childData = childSnapshot.val();
+    //             // console.log(JSON.stringify(childData, null, 2));
+    //             if (childData.status === 'incart') {
+    //                 cartData.push(childData);
+    //             }
+    //         });
+    //         setDataCart(cartData);
+    //     }, {
+    //         onlyOnce: false
+    //     });
+    // }
+
+    // const fetchData = async () => {
+    //     const dataUser = await getUserData()
+    //     getDataCart(dataUser.uid + "")
+    //     setUser(dataUser)
+
+    // };
+
+    // useEffect(() => {
+    //     fetchData()
+    // }, []);
+
+    const { cartItemsCount } = useCart();
+
+    const showToast = (message) => {
+        ToastAndroid.show("" + message, ToastAndroid.SHORT);
+    };
+
     return (
-
-
-        <Tab.Navigator onTabLongPress={() => alert("123")} initialRouteName='Home'
+        <Tab.Navigator onTabLongPress={(item) => showToast(item.route.name)} initialRouteName='Home'
             shifting={true}
 
         // theme default
@@ -43,7 +96,7 @@ export default function BottomNav() {
                     component={tab.component}
                     options={{
                         tabBarLabel: tab.label,
-                        tabBarBadge: tab.label === "Cart" ? 3 : null,
+                        tabBarBadge: tab.label === "Cart" ? cartItemsCount : null,
                         tabBarIcon: ({ focused, color, size }) => (
                             <Icon name={focused ? tab.activeIcon : tab.inActiveIcon} type={tab.type} color={color} size={size} />
                         ),
