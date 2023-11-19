@@ -26,6 +26,7 @@ interface SameDataProduct {
 export default function DetailProductByIDCate(props: any) {
     const navigation = useNavigation()
 
+    const [isFavourite, setIsFavourite] = useState(false);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -35,25 +36,28 @@ export default function DetailProductByIDCate(props: any) {
             headerTitle: '',
             headerTintColor: 'black',
             headerLeft: () => (
-                <TouchableOpacity
-                    onPress={() => navigation.goBack()}
-                    className="p-2 rounded-full ml-1 mt-3 bg-gray-100">
-                    <ChevronLeftIcon size={hp(3.5)} strokeWidth={4.5} color="#2dd4bf" />
-                </TouchableOpacity>
-            ),
-            headerRight: () => (
-                <View className='flex-row'>
+                <Animated.View entering={FadeIn.delay(200).duration(1000)} >
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
-                        className="p-2 rounded-full mr-1 bg-gray-100">
+                        className="p-2 rounded-full ml-1 mt-3 bg-gray-100">
+                        <ChevronLeftIcon size={hp(3.5)} strokeWidth={3.5} color="#2dd4bf" />
+                    </TouchableOpacity>
+                </Animated.View>
+
+            ),
+            headerRight: () => (
+                <Animated.View entering={FadeIn.delay(200).duration(1000)} className='flex-row'>
+                    <TouchableOpacity
+                        onPress={() => setIsFavourite(!isFavourite)}
+                        className="p-2 rounded-full mr-2 bg-gray-100">
                         <HeartIcon size={hp(3.5)} strokeWidth={4.5} color={isFavourite ? "red" : "gray"} />
                     </TouchableOpacity>
                     <TouchableOpacity
-                        onPress={() => setIsFavourite(!isFavourite)}
+                        onPress={() => props.navigation.navigate('BottomNav')}
                         className="p-2 rounded-full bg-gray-100">
-                        <ShoppingCartIcon size={hp(3.5)} strokeWidth={2} color="#2dd4bf" />
+                        <ShoppingCartIcon size={hp(3.5)} strokeWidth={1.5} color="#2dd4bf" />
                     </TouchableOpacity>
-                </View>
+                </Animated.View>
             ),
         });
     }, []);
@@ -67,7 +71,7 @@ export default function DetailProductByIDCate(props: any) {
     const [nameCategory, setNameCategory] = useState('')
     const [flagNameCate, setFlagNameCate] = useState(false);
     const [arrayNameCategory, setArrayCategory] = useState<string[]>([])
-    const [isFavourite, setIsFavourite] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const [DATA, setSameData] = useState<SameDataProduct[]>([]);
 
