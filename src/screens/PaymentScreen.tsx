@@ -1,9 +1,9 @@
-import { View, Text, TouchableOpacity, StatusBar, FlatList, Image } from 'react-native'
+import { View, Text, TouchableOpacity, StatusBar, FlatList, Image, ToastAndroid } from 'react-native'
 import React, { useState, useEffect, useMemo } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { database, auth } from '../config/FirebaseConfig';
 import { onAuthStateChanged } from 'firebase/auth';
-import { ref as databaseRef, onValue } from "firebase/database";
+import { ref as databaseRef, onValue, push, runTransaction, remove } from "firebase/database";
 import { IUserInterface, ICartInterface } from '../interfaces'
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { ChevronLeftIcon, XMarkIcon } from 'react-native-heroicons/outline';
@@ -11,8 +11,7 @@ import { themeColors } from '../theme';
 import RadioGroup, { RadioButtonProps } from 'react-native-radio-buttons-group';
 import GetLocation from 'react-native-get-location'
 import MapView from 'react-native-maps';
-import LocationScreen from './LocationScreen';
-
+import uuid from 'react-native-uuid';
 
 
 interface Location {
@@ -120,7 +119,7 @@ export default function PaymentScreen(props: any) {
             })
             .catch(error => {
                 const { code, message } = error;
-                console.warn(code, message);
+                // console.warn(code, message);
             })
     }
 
@@ -135,9 +134,93 @@ export default function PaymentScreen(props: any) {
 
         return img;
     }
-    const handlePayment = () => {
-        console.log(123);
 
+    const showToast = (message: any) => {
+        ToastAndroid.show("" + message, ToastAndroid.SHORT);
+    };
+
+    const getDateTime = () => {
+        let dateTime = new Date()
+        let ngay = dateTime.getDate();
+        let thang = dateTime.getMonth() + 1;
+        let nam = dateTime.getFullYear();
+
+        let gio = dateTime.getHours();
+        let phut = dateTime.getMinutes();
+        let giay = dateTime.getSeconds();
+        let miliGiay = dateTime.getMilliseconds();
+        let date = `${ngay}/${thang}/${nam}`
+        let time = `${gio}:${phut}:${giay}.${miliGiay}`
+        return `${date}-${time}`
+    }
+
+
+    const handleDeleteCart = (itemSelected: ICartInterface) => {
+        const dataRef = databaseRef(database, `carts/${itemSelected.idUser}/${itemSelected.pos}`);
+        remove(dataRef)
+            .then(() => {
+                console.log('Data deleted successfully!');
+            })
+            .catch((error) => {
+                console.error('Error deleting data:', error);
+            });
+    }
+
+    const handlePayment = async () => {
+        // console.log(JSON.stringify(dataCart, null, 2));
+        // return
+        if (dataCart.length <= 0) {
+            showToast('Không có sản phẩm để mua')
+            props.navigation.navigate('Home')
+
+            return
+        }
+        dataCart.map(async (item, index) => {
+            let invoiceID = uuid.v4();
+            let idUser = currentUser?.uid;
+            let idProduct = item.id;
+            let currentTime = getDateTime()
+
+            try {
+                const dbRef = `orders/${idUser}`;
+                const dataRef = databaseRef(database, dbRef);
+
+                // get key
+                const newDataRef = push(dataRef);
+                const dataID = newDataRef.key;
+                const newData = {
+                    id: dataID,
+                    datetime: currentTime,
+                    idUser: idUser,
+                    idProduct: idProduct,
+                    item: item.item,
+                    price: item.price,
+                    quantity: item.quantity,
+                    img: item.img,
+                    status: 'waitting',
+                    notes: ''
+                };
+                try {
+                    await runTransaction(dataRef, (currentData) => {
+                        if (!currentData) {
+                            return [newData];
+                        } else {
+                            currentData.push(newData);
+                            return currentData;
+                        }
+                    });
+                    showToast('Đặt hàng thành công!')
+                    handleDeleteCart(item)
+                    console.log('Đặt hàng thành công!');
+                } catch (error) {
+                    showToast(`Đặt hàng thất bại: ${error}`)
+                    console.error('Đặt hàng thất bại:', error);
+                }
+            } catch (error) {
+                console.error('Firebase: ', error);
+            }
+
+        })
     }
 
 
@@ -211,77 +294,76 @@ export default function PaymentScreen(props: any) {
                             data={dataCart}
                             keyExtractor={(item) => item.id}
                             renderItem={renderItem}
-                            // ItemSeparatorComponent={() => <View className='h-0.5 bg-gray-100 mx-4'></View>}
+                        // ItemSeparatorComponent={() => <View className='h-0.5 bg-gray-100 mx-4'></View>}
 
-                            ListFooterComponent={<View>
-                                <View className='h-0.5 bg-gray-100 my-4'></View>
-                                {dataCart.length > 0 &&
-                                    <View className='flex'>
-                                        {/* Total */}
-                                        <View className='flex-row justify-between'>
-                                            <Text style={{ fontFamily: 'Inter-Medium' }} className='text-black text-base'>Total</Text>
-                                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-lg'>{formatMoney(parseFloat(totalPrice))}</Text>
-                                        </View>
-                                        {/* Discount */}
-                                        <View className='flex-row justify-between'>
-                                            <Text style={{ fontFamily: 'Inter-Medium' }} className='text-black text-base'>Discounts {discount}%</Text>
-                                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-red-500 text-lg'>- {getNewPrice(parseFloat(totalPrice), discount, true)}</Text>
-                                        </View>
-                                        {/* Delivery */}
-                                        <View className='flex-row justify-between'>
-                                            <Text style={{ fontFamily: 'Inter-Medium' }} className='text-black text-base'>Delivery charges</Text>
-                                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-green-500 text-lg'>{delivery > 0 ? getNewPrice(parseFloat(totalPrice), delivery, true) : 'FREE'}</Text>
-                                        </View>
-
-                                        {/* Total */}
-                                        <View className='flex-row justify-between mt-1'>
-                                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-lg'>Total</Text>
-                                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-lg'>
-                                                {formatMoney(parseFloat(totalPrice) - getNewPrice(parseFloat(totalPrice), discount, false) + getNewPrice(parseFloat(totalPrice), delivery, false))}
-                                            </Text>
-                                        </View>
-                                        <View className='h-0.5 bg-gray-100 my-4'></View>
-                                        <View className='flex'>
-                                            {/* Method title */}
-                                            <View className='flex-row justify-between'>
-                                                <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-xl'>Payment method</Text>
-                                                <TouchableOpacity>
-                                                    <Text style={{ fontFamily: 'Inter-Medium' }} className='text-green-500 text-base'>Add method</Text>
-                                                </TouchableOpacity>
-                                            </View>
-
-                                            {/* Method options */}
-                                            <View
-                                                style={{ shadowColor: themeColors.bgColor(0.2), shadowRadius: 7 }}
-                                                className="bg-gray-100 flex-row m-1 p-2 rounded-lg shadow-lg justify-between items-center"
-                                            >
-
-                                                <Image className='w-12 h-12' source={require('../assets/images/money.png')} />
-                                                <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-base ml-2'>Tiền mặt</Text>
-                                                <View className='ml-auto'>
-                                                    <RadioGroup
-                                                        radioButtons={radioButtons}
-                                                        onPress={setSelectedId}
-                                                        selectedId={selectedId}
-                                                    />
-                                                </View>
-                                            </View>
-                                            {/* <MapView className='flex-1' region={myLocation} showsUserLocation={true} /> */}
-                                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-xl my-4 ml-2'>Delevery Address</Text>
-                                            <MapView
-                                                className='w-full h-48'
-                                                initialRegion={myLocation}
-                                            />
-                                        </View>
-                                    </View>
-
-
-                                }
-                            </View>
-                            }
+                        // ListFooterComponent={}
                         />
                     )
             }
+            <View
+                className='px-5'>
+                <View className='h-0.5 bg-gray-100 my-4'></View>
+                {dataCart.length > 0 &&
+                    <View className='flex'>
+                        {/* Total */}
+                        <View className='flex-row justify-between'>
+                            <Text style={{ fontFamily: 'Inter-Medium' }} className='text-black text-base'>Total</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-lg'>{formatMoney(parseFloat(totalPrice))}</Text>
+                        </View>
+                        {/* Discount */}
+                        <View className='flex-row justify-between'>
+                            <Text style={{ fontFamily: 'Inter-Medium' }} className='text-black text-base'>Discounts {discount}%</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-red-500 text-lg'>- {getNewPrice(parseFloat(totalPrice), discount, true)}</Text>
+                        </View>
+                        {/* Delivery */}
+                        <View className='flex-row justify-between'>
+                            <Text style={{ fontFamily: 'Inter-Medium' }} className='text-black text-base'>Delivery charges</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-green-500 text-lg'>{delivery > 0 ? getNewPrice(parseFloat(totalPrice), delivery, true) : 'FREE'}</Text>
+                        </View>
+
+                        {/* Total */}
+                        <View className='flex-row justify-between mt-1'>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-lg'>Total</Text>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-lg'>
+                                {formatMoney(parseFloat(totalPrice) - getNewPrice(parseFloat(totalPrice), discount, false) + getNewPrice(parseFloat(totalPrice), delivery, false))}
+                            </Text>
+                        </View>
+                        <View className='h-0.5 bg-gray-100 my-4'></View>
+                        <View className='flex'>
+                            {/* Method title */}
+                            <View className='flex-row justify-between'>
+                                <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-xl'>Payment method</Text>
+                                <TouchableOpacity>
+                                    <Text style={{ fontFamily: 'Inter-Medium' }} className='text-green-500 text-base'>Add method</Text>
+                                </TouchableOpacity>
+                            </View>
+
+                            {/* Method options */}
+                            <View
+                                style={{ shadowColor: themeColors.bgColor(0.2), shadowRadius: 7 }}
+                                className="bg-gray-100 flex-row m-1 p-2 rounded-lg shadow-lg justify-between items-center"
+                            >
+
+                                <Image className='w-12 h-12' source={require('../assets/images/money.png')} />
+                                <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-base ml-2'>Tiền mặt</Text>
+                                <View className='ml-auto'>
+                                    <RadioGroup
+                                        radioButtons={radioButtons}
+                                        onPress={setSelectedId}
+                                        selectedId={selectedId}
+                                    />
+                                </View>
+                            </View>
+                            {/* <MapView className='flex-1' region={myLocation} showsUserLocation={true} /> */}
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-xl my-4 ml-2'>Delevery Address</Text>
+                            <MapView
+                                className='w-full h-48'
+                                initialRegion={myLocation}
+                            />
+                        </View>
+                    </View>
+                }
+            </View>
             <View
                 className='mx-5'
             >

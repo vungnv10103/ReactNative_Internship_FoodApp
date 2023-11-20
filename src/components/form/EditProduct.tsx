@@ -35,6 +35,7 @@ export default function EditProduct(props: any) {
     const [nameProduct, setNameProduct] = useState(productSelected.name || '')
     const [description, setDescription] = useState(productSelected.description || '')
     const [price, setPrice] = useState(productSelected.price.toString() || '')
+    const [discount, setDiscount] = useState(productSelected.sale.toString() || '')
 
 
 
@@ -107,7 +108,7 @@ export default function EditProduct(props: any) {
 
 
     // handleEditProductySubmit(categorySelected, productSelected.pos, nameProduct, description, price, selectedImage)
-    const handleEditProductySubmit = async (categorySelected: ICategoryInterface, posProduct: string, name: string, description: string, price: string, imageSelected: string) => {
+    const handleEditProductySubmit = async (categorySelected: ICategoryInterface, posProduct: string, name: string, description: string, price: string, discount: string, imageSelected: string) => {
         const updateData = {
             pos: posProduct,
             id: productSelected.id,
@@ -117,7 +118,7 @@ export default function EditProduct(props: any) {
             img: productSelected?.img || '',
             description: description,
             price: parseFloat(price),
-            sale: productSelected.sale,
+            sale: parseFloat(discount),
             sold: productSelected.sold,
             status: productSelected.status
         };
@@ -162,6 +163,10 @@ export default function EditProduct(props: any) {
             showToast('Chưa nhập tên sản phẩm')
             return
         }
+        else if (discount.length <= 0) {
+            showToast('Chưa nhập giảm giá sản phẩm')
+            return
+        }
         else if (price.length <= 0) {
             showToast('Chưa nhập giá sản phẩm')
             return
@@ -170,7 +175,7 @@ export default function EditProduct(props: any) {
             showToast('Chưa thêm ảnh sản phẩm')
             return
         }
-        handleEditProductySubmit(categorySelected, productSelected.pos, nameProduct, description, price, selectedImage.uri)
+        handleEditProductySubmit(categorySelected, productSelected.pos, nameProduct, description, price, discount, selectedImage.uri)
 
 
 
@@ -280,6 +285,15 @@ export default function EditProduct(props: any) {
                     value={price}
                     inputMode='numeric'
                     onChangeText={(text) => setPrice(text)}
+                />
+
+                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-black py-1 mt-2">Giảm giá</Text>
+                <TextInput
+                    className="text-black p-3 rounded border-gray-300 border mb-2"
+                    style={{ fontFamily: 'Inter-Medium' }}
+                    value={discount}
+                    inputMode='numeric'
+                    onChangeText={(text) => setDiscount(text)}
                 />
 
 
