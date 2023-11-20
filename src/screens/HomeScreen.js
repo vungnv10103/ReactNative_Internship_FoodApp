@@ -10,6 +10,9 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import BottomSheetMap from '../components/BottomSheetMap';
 import BottomSheetFilter from '../components/BottomSheetFilter';
 import Icon, { Icons } from '../components/Icons';
+import GetLocation from 'react-native-get-location'
+
+
 
 export default function HomeScreen() {
 
@@ -39,6 +42,23 @@ export default function HomeScreen() {
     const [products, setProducts] = useState([]);
     const [productsSale, setProductsSale] = useState([]);
     const [productsPopular, setProductsPopular] = useState([]);
+
+
+
+    const getCurrentLocation = () => {
+        GetLocation.getCurrentPosition({
+            enableHighAccuracy: true,
+            timeout: 60000,
+        })
+            .then(location => {
+                // console.log(location.longitude);
+            })
+            .catch(error => {
+                const { code, message } = error;
+                console.warn(code, message);
+            })
+    }
+
 
     const getUserData = async () => {
         try {
@@ -116,6 +136,7 @@ export default function HomeScreen() {
     }
 
     const getDataHome = () => {
+        getCurrentLocation()
         getUserData()
         getDataCategory()
         getDataProduct()

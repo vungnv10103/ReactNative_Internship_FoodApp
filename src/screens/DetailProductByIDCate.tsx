@@ -196,7 +196,10 @@ export default function DetailProductByIDCate(props: any) {
                 datetime: currentTime,
                 idUser: idUser,
                 idProduct: idProduct,
+                item: productSelected.name,
+                price: getNewPrice(productSelected.price, productSelected.sale, false),
                 quantity: quantity,
+                img: productSelected.img,
                 status: 'incart',
                 notes: ''
             };

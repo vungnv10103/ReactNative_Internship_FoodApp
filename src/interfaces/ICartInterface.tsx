@@ -4,7 +4,10 @@ export interface ICartInterface {
     datetime: string,
     idUser: string,
     idProduct: string,
+    item: string,
+    price: number,
     quantity: number,
+    img: string,
     status: string,
     notes: string
 }

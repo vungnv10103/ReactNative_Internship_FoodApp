@@ -18,7 +18,6 @@ export default function CartScreen(props: any) {
     const { updateCartItemsCount } = useCart();
 
     const [currentUser, setUser] = useState<IUserInterface | null>();
-    const [dataProduct, setDataProduct] = useState<IProductInterface | null>();
     const [totalQuantity, setTotalQuantity] = useState<string>('');
     const [totalPrice, setTotalPrice] = useState<string>('');
     const [dataCart, setDataCart] = useState<ICartInterface[]>([]);
@@ -31,21 +30,6 @@ export default function CartScreen(props: any) {
                 }
             })
         })
-    }
-
-    const getProductData = async (id: string) => {
-        const dbRef = databaseRef(database, 'products');
-        onValue(dbRef, (snapshot) => {
-            snapshot.forEach((childSnapshot) => {
-                const childKey = childSnapshot.key;
-                const childData = childSnapshot.val();
-                if (childData.id === id) {
-                    setDataProduct(childData)
-                }
-            });
-        }, {
-            onlyOnce: false
-        });
     }
 
     const getDataCart = (idUser: string) => {
@@ -178,66 +162,73 @@ export default function CartScreen(props: any) {
         try {
             update(databaseRef(database), updates);
         } catch (error) {
-            console.error('Cập nhật thất bại:', error);
+            console.error('Cập nhật số lượng thất bại:', error);
+        }
+    }
+
+    function formatMoney(price: number) {
+        if (price >= 1000) {
+            return price.toLocaleString('vi-VN') + " đ";
+        } else {
+            return price.toString() + " đ";
         }
     }
 
     const renderItem = ({ item }: { item: ICartInterface }) => (
         <View
             style={{ shadowColor: themeColors.bgColor(0.2), shadowRadius: 7 }}
-            className="bg-white flex-row m-1 p-2 rounded-lg shadow-lg justify-between"
+            className="bg-white flex-row m-1 p-2 rounded-lg shadow-lg justify-between items-center"
         >
-            <Image className="h-24 w-24 rounded-lg" source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/internship-88b0a.appspot.com/o/images%2F2a322084-8d18-4c29-b41b-d2e729a5dc0c.png?alt=media&token=be89227e-93c1-4e5e-a9a4-08024b1b96ff' }} />
-            <View className='justify-between'>
-                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-base text-black pt-1.5">
-                    {item.id.length > 15 ? item.id.slice(0, 15) + "..." : item.id}
+            <Image className="h-24 w-24 rounded-lg" source={{ uri: item.img }} />
+
+            {/* Information */}
+            <View className='ml-2 space-y-2.5'>
+                <Text style={{ fontFamily: 'Inter-Bold' }} className="text-base text-black">
+                    {item.item.length > 15 ? item.item.slice(0, 15) + "..." : item.item}
                 </Text>
-                <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sm text-black pt-1.5">
-                    {item.idProduct.length > 15 ? item.idProduct.slice(0, 15) + "..." : item.idProduct}
+                <Text style={{ fontFamily: 'Inter-Medium' }} className="text-sm text-black">
+                    {/* {item.idProduct.length > 15 ? item.idProduct.slice(0, 15) + "..." : item.idProduct} */}
                 </Text>
                 {/* Price */}
-                {/* <View>
-                        {item.sale > 0 ? (
-                            <View className='flex-row items-center'>
-                                <Image className="h-4 w-4" source={require('./../assets/images/sale_tag.png')} />
-                                <Text style={{ fontFamily: "Inter-Bold" }} className='line-through text-red-600 text-sm mx-1'>
-                                    {getNewPrice(item.price, item.sale, true)}
-                                </Text>
-                            </View>
-                        ) : (<View></View>)}
-                        <Text style={{ fontFamily: "Inter-Bold" }} className='text-black text-base'>
-                            {getNewPrice(item.price, item.sale, true)}
-                        </Text>
-                    </View> */}
-            </View>
-            <View className='items-center'>
-                <TouchableOpacity
-                    onPress={() => handleQuantity('plus', item)}
-                >
-                    {/* text-teal-400 */}
-                    <Text style={{ backgroundColor: '#b00020' }} className='rounded-lg p-1.5 text-center text-white'>
-                        <Icon type={Icons.Ionicons} name="add" color='white' size={24} style={{}} />
-                    </Text>
-                </TouchableOpacity>
-                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black mx-2 text-lg'>{item.quantity}</Text>
-                <TouchableOpacity
-                    onPress={() => handleQuantity('minus', item)}
-                >
-                    {/* let classMinusBtn = quantity <= 1 ? "bg-teal-100" : "bg-teal-400" */}
-                    <Text style={{ backgroundColor: item.quantity <= 1 ? '#ffe9e9' : '#b00020' }} className='rounded-lg p-1.5 text-center justify-items-center text-white'>
-                        <Icon type={Icons.Ionicons} name="remove-outline" color='white' size={24} style={{}} />
-                    </Text>
-                </TouchableOpacity>
+                <Text style={{ fontFamily: "Inter-Bold" }} className='text-black text-base'>
+                    {formatMoney(item.price)}
+                </Text>
             </View>
 
-            <View className=''>
-                <CheckBox
-                    tintColors={{}}
-                    disabled={false}
-                    value={item.status === 'payment'}
-                    onValueChange={(newValue) => handleStatus(newValue, item)}
-                />
+            {/* Button Action */}
+            <View className='flex-row ml-auto'>
+                {/* Plus & Minus */}
+                <View className='items-center mr-1'>
+                    <TouchableOpacity
+                        onPress={() => handleQuantity('plus', item)}
+                    >
+                        {/* text-teal-400 */}
+                        <Text style={{ backgroundColor: '#b00020' }} className='rounded-lg p-1.5 text-center text-white'>
+                            <Icon type={Icons.Ionicons} name="add" color='white' size={24} style={{}} />
+                        </Text>
+                    </TouchableOpacity>
+                    <Text style={{ fontFamily: "Inter-Bold" }} className='text-black mx-2 text-lg'>{item.quantity}</Text>
+                    <TouchableOpacity
+                        onPress={() => handleQuantity('minus', item)}
+                    >
+                        {/* let classMinusBtn = quantity <= 1 ? "bg-teal-100" : "bg-teal-400" */}
+                        <Text style={{ backgroundColor: item.quantity <= 1 ? '#ffe9e9' : '#b00020' }} className='rounded-lg p-1.5 text-center justify-items-center text-white'>
+                            <Icon type={Icons.Ionicons} name="remove-outline" color='white' size={24} style={{}} />
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* Checkbox */}
+                <View className=''>
+                    <CheckBox
+                        tintColors={{}}
+                        disabled={false}
+                        value={item.status === 'payment'}
+                        onValueChange={(newValue) => handleStatus(newValue, item)}
+                    />
+                </View>
             </View>
+
         </View>
     );
 
