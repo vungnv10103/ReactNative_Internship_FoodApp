@@ -223,6 +223,12 @@ export default function AccountScreen(props: any) {
                             onPress={() => props.navigation.navigate("ManageProduct")}>
                             <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí sản phẩm</Text>
                         </TouchableOpacity>
+
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => props.navigation.navigate('ManageOrderAdmin')}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí đơn hàng</Text>
+                        </TouchableOpacity>
                     </View>
                 ) : (
                     <View>
@@ -230,8 +236,21 @@ export default function AccountScreen(props: any) {
                 )
                 }
 
-                {/* Logout */}
+                {/*  */}
+                {!isAdmin && <View>
+                    <TouchableOpacity
+                        className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                        onPress={() => props.navigation.navigate('ManageAccount')}>
+                        <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí tài khoản</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                        onPress={() => props.navigation.navigate('ManageOrderAdmin')}>
+                        <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí đơn hàng</Text>
+                    </TouchableOpacity>
+                </View>}
 
+                {/* Logout */}
                 <TouchableOpacity
                     className="w-full bg-sky-400 p-3 rounded-xl mb-3"
                     onPress={logout}>

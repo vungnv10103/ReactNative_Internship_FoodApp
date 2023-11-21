@@ -37,7 +37,6 @@ const BottomSheetFilter = forwardRef<Ref>((props, ref) => {
 
     const getDataCategory = () => {
         const dbRef = databaseRef(database, 'categories');
-
         onValue(dbRef, (snapshot) => {
             const dataFromFirebase: any[] | ((prevState: never[]) => never[]) = [];
             snapshot.forEach((childSnapshot) => {

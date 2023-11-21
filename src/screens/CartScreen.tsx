@@ -1,4 +1,4 @@
-import { View, Text, StatusBar, Image, TouchableOpacity, Dimensions, Alert } from 'react-native'
+import { View, Text, StatusBar, Image, TouchableOpacity, Dimensions, Alert, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { ChevronLeftIcon, TrashIcon, ShoppingBagIcon } from 'react-native-heroicons/outline';
@@ -284,7 +284,8 @@ export default function CartScreen(props: any) {
                         </View>
                     ) :
                     (
-                        <View className='flex-1 justify-center items-center p-5'>
+                        <ScrollView className='flex-1 p-5'
+                            contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }}>
                             <Image className='h-64 w-64' source={require('../assets/images/cart_empty.png')} />
                             <Text style={{ fontFamily: 'Inter-Bold' }} className='text-black text-xl mt-5'>Giỏ hàng trống</Text>
                             <TouchableOpacity
@@ -292,7 +293,7 @@ export default function CartScreen(props: any) {
                                 className="border border-red-400 bg-white p-2.5 rounded-lg mt-3">
                                 <Text style={{ fontFamily: 'Inter-Medium' }} className='text-red-500 text-base text-center'>Mua sắm ngay!</Text>
                             </TouchableOpacity>
-                        </View>
+                        </ScrollView>
                     )
             }
 

@@ -171,7 +171,7 @@ export default function PaymentScreen(props: any) {
         // return
         if (dataCart.length <= 0) {
             showToast('Không có sản phẩm để mua')
-            props.navigation.navigate('Home')
+            props.navigation.navigate('BottomNav')
 
             return
         }
@@ -182,7 +182,7 @@ export default function PaymentScreen(props: any) {
             let currentTime = getDateTime()
 
             try {
-                const dbRef = `orders/${idUser}`;
+                const dbRef = `orders/${item.idSeller}`;
                 const dataRef = databaseRef(database, dbRef);
 
                 // get key
@@ -193,11 +193,12 @@ export default function PaymentScreen(props: any) {
                     datetime: currentTime,
                     idUser: idUser,
                     idProduct: idProduct,
+                    idSeller: item.idSeller,
                     item: item.item,
                     price: item.price,
                     quantity: item.quantity,
                     img: item.img,
-                    status: 'waitting',
+                    status: 'waiting',
                     notes: ''
                 };
                 try {
@@ -369,7 +370,7 @@ export default function PaymentScreen(props: any) {
             >
                 <TouchableOpacity
                     style={{ backgroundColor: '#b00020' }}
-                    className="flex-row w-full p-3 rounded-lg justify-center mb-10"
+                    className="flex-row w-full p-3 rounded-lg justify-center mb-8"
                     onPress={() => {
                         handlePayment()
                     }}

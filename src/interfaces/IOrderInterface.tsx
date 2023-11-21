@@ -1,4 +1,4 @@
-export interface ICartInterface {
+export interface IOrderInterface {
     pos: string,
     id: string,
     datetime: string,

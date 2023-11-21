@@ -4,6 +4,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { ChevronLeftIcon, ClockIcon, FireIcon } from 'react-native-heroicons/outline';
 import { HeartIcon, Square3Stack3DIcon, UsersIcon } from 'react-native-heroicons/solid';
 import Animated, { FadeInDown, FadeIn, useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import { onAuthStateChanged } from 'firebase/auth';
 import { storage, database, auth } from '../config/FirebaseConfig';
 import { getDatabase, runTransaction, push, ref as databaseRef, onValue, query, orderByChild, get } from "firebase/database";
 import { useNavigation, Link } from '@react-navigation/native'
@@ -13,24 +14,12 @@ import Icon, { Icons } from '../components/Icons';
 import { themeColors } from '../theme';
 import ProductsRecommend from '../components/productRecommend';
 import Loading from '../components/Loading';
-
-
-
-interface Product {
-    id: string;
-    idCate: string;
-    name: string;
-    img: string;
-    description: string;
-    price: number;
-    sale: number;
-    sold: number;
-    status: number;
-}
+import uuid from 'react-native-uuid';
+import { IUserInterface, IProductInterface } from '../interfaces';
 
 interface SameDataProduct {
     title: string;
-    data: Product[];
+    data: IProductInterface[];
 }
 
 
@@ -38,9 +27,10 @@ interface SameDataProduct {
 export default function DetailProductByID(props: any) {
     const navigation = useNavigation()
 
-    const [productSelected, setProductSelected] = useState<Product>(props.route.params)
+    const [productSelected, setProductSelected] = useState<IProductInterface>(props.route.params)
 
-    const [productByIdCart, setProductByIdCart] = useState<Product[]>([])
+    const [currentUser, setCurrentUser] = useState<IUserInterface>()
+    const [productByIdCart, setProductByIdCart] = useState<IProductInterface[]>([])
     const [flagProduct, setFlagProduct] = useState(true);
     const [nameCategory, setNameCategory] = useState('')
     const [flagNameCate, setFlagNameCate] = useState(false);
@@ -108,30 +98,20 @@ export default function DetailProductByID(props: any) {
     }
 
     const fetchData = async () => {
-        const nameCategoryData = await getNameCategory(productSelected.idCate);
-        const productByIdCartData = await getAllProByIdCart(productSelected.idCate);
-
-        const sameData = [{
-            title: nameCategoryData,
-            data: productByIdCartData
-        }];
-
-        setSameData(sameData);
-        setTimeout(() => {
-            setLoading(false);
-        }, 3000);
+        const userData = await getUserData();
+        setCurrentUser(userData)
 
     };
 
     useEffect(() => {
-
+        fetchData()
     }, [])
 
     const getNewPrice = (oldPrice: number, discount: number, isFormat: boolean) => {
         const newPrice = oldPrice - (oldPrice * discount / 100)
         return formatMoney(newPrice)
     }
-    function formatMoney(price: number) {
+    const formatMoney = (price: number) => {
         if (price >= 1000) {
             return price.toLocaleString('vi-VN') + " đ";
         } else {
@@ -157,6 +137,77 @@ export default function DetailProductByID(props: any) {
     const showToast = (message: any) => {
         ToastAndroid.show("" + message, ToastAndroid.SHORT);
     };
+
+    const getDateTime = () => {
+        let dateTime = new Date()
+        let ngay = dateTime.getDate();
+        let thang = dateTime.getMonth() + 1;
+        let nam = dateTime.getFullYear();
+
+        let gio = dateTime.getHours();
+        let phut = dateTime.getMinutes();
+        let giay = dateTime.getSeconds();
+        let miliGiay = dateTime.getMilliseconds();
+        let date = `${ngay}/${thang}/${nam}`
+        let time = `${gio}:${phut}:${giay}.${miliGiay}`
+        return `${date}-${time}`
+    }
+
+    const getUserData = async () => {
+        return new Promise<any>((resolve) => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    resolve(user)
+                }
+            })
+        })
+    }
+
+    const addToCart = async () => {
+        let invoiceID = uuid.v4();
+        let idUser = currentUser?.uid;
+        let idProduct = productSelected.id;
+        let currentTime = getDateTime()
+
+        try {
+            const dbRef = `carts/${idUser}`;
+            const dataRef = databaseRef(database, dbRef);
+
+            // get key
+            const newDataRef = push(dataRef);
+            const dataID = newDataRef.key;
+            const newData = {
+                id: dataID,
+                datetime: currentTime,
+                idUser: idUser,
+                idProduct: idProduct,
+                idSeller: productSelected.idSeller,
+                item: productSelected.name,
+                price: getNewPrice(productSelected.price, productSelected.sale, false),
+                quantity: quantity,
+                img: productSelected.img,
+                status: 'incart',
+                notes: ''
+            };
+            try {
+                await runTransaction(dataRef, (currentData) => {
+                    if (!currentData) {
+                        return [newData];
+                    } else {
+                        currentData.push(newData);
+                        return currentData;
+                    }
+                });
+                showToast('Đã thêm vào giỏ hàng!')
+                console.log('Đã thêm vào giỏ hàng!');
+            } catch (error) {
+                showToast(`Thêm vào giỏ hàng thất bại: ${error}`)
+                console.error('Thêm vào giỏ hàng thất bại:', error);
+            }
+        } catch (error) {
+            console.error('Firebase: ', error);
+        }
+    }
 
     let classMinusBtn = quantity <= 1 ? "bg-teal-100" : "bg-teal-400"
 
@@ -243,7 +294,7 @@ export default function DetailProductByID(props: any) {
             <View className='flex items-center mx-5 mt-5'>
                 <TouchableOpacity
                     className='w-full bg-teal-400 p-2.5 rounded-lg  mx-14'
-                    onPress={() => { }}
+                    onPress={addToCart}
                 >
                     <Text style={{ fontFamily: "Inter-Bold" }} className='text-white text-lg uppercase text-center'>Add to cart</Text>
                 </TouchableOpacity>

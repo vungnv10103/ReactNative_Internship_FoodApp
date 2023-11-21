@@ -12,8 +12,12 @@ import LocationScreen from "./LocationScreen";
 import ManageProduct from "./ManageProduct";
 import ListProductByIDCate from "./ListProductByIDCate";
 import PaymentScreen from "./PaymentScreen";
-
-
+import ManageAccount from "./ManageAccount";
+import ManageOrderAdmin from "./ManageOrderAdmin";
+import WaitingOrderScreen from "./order_admin/WaitingOrderScreen";
+import SuccessOrderScreen from "./order_admin/SuccessOrderScreen";
+import CancelOrderScreen from "./order_admin/CancelOrderScreen";
+import DetailOrder from "./order_admin/DetailOrder";
 
 export {
     LoginScreen,
@@ -30,4 +34,11 @@ export {
     ManageProduct,
     ListProductByIDCate,
     PaymentScreen,
+    ManageAccount,
+    ManageOrderAdmin,
+    WaitingOrderScreen,
+    SuccessOrderScreen,
+    CancelOrderScreen,
+    DetailOrder,
+    
 }
