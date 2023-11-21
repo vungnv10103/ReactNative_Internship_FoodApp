@@ -16,7 +16,13 @@ import {
   LocationScreen,
   ManageProduct,
   ListProductByIDCate,
-  PaymentScreen
+  PaymentScreen,
+  ManageAccount,
+  ManageOrderAdmin,
+  WaitingOrderScreen,
+  SuccessOrderScreen,
+  CancelOrderScreen,
+  DetailOrder
 } from './src/screens/index'
 
 import { CartProvider } from './src/screens/CartProvider';
@@ -38,11 +44,15 @@ export default function App() {
               <Stack.Screen name='Home' component={HomeScreen} options={{ headerShown: false }} />
               <Stack.Screen name='DetailProductByIDCate' component={DetailProductByIDCate} options={{ headerShown: true, headerBackVisible: false }} />
               <Stack.Screen name='DetailProductByID' component={DetailProductByID} options={{ headerShown: false }} />
-              {/* <CartProvider> */}
               <Stack.Screen name='BottomNav' component={BottomNav} options={{ headerShown: false }} />
               {/* <Stack.Screen name='BottomNav' component={BottomNav} options={{ header: () => <CustomHeader show={true} /> }} /> */}
-              {/* </CartProvider> */}
               <Stack.Screen name='Account' component={AccountScreen} options={{ headerShown: false }} />
+              <Stack.Screen name='ManageAccount' component={ManageAccount} options={{ headerShown: false }} />
+              <Stack.Screen name='ManageOrderAdmin' component={ManageOrderAdmin} options={{ headerShown: true, title: 'Quản lí đơn hàng' }} />
+              <Stack.Screen name='WaitingOrder' component={WaitingOrderScreen} options={{ headerShown: false }} />
+              <Stack.Screen name='SuccessOrder' component={SuccessOrderScreen} options={{ headerShown: false }} />
+              <Stack.Screen name='CancelOrder' component={CancelOrderScreen} options={{ headerShown: false }} />
+              <Stack.Screen name='DetailOrder' component={DetailOrder} options={{ headerShown: false }} />
               <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
               <Stack.Screen name='Payment' component={PaymentScreen} options={{ headerShown: false }} />
               <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />
