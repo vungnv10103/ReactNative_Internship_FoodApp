@@ -1,3 +1,34 @@
+# FoodApp Delivery
+
+## Preview
+
+### Signup, Login Screen
+<img src='/ImagePreview/signup.png' width='300' height='600'> <img src='/ImagePreview/Login.png' width='300' height='600'>
+
+### Home Screen
+<img src='/ImagePreview/Home1.png' width='300' height='600'> <img src='/ImagePreview/Home3.png' width='300' height='600'> <img src='/ImagePreview/Home2.png' width='300' height='600'> 
+
+### Cart Screen
+<img src='/ImagePreview/Cart1.png' width='300' height='600'> <img src='/ImagePreview/Cart2.png' width='300' height='600'>
+
+### ListProduct Screen
+<img src='/ImagePreview/ListProduct1.png' width='300' height='600'> <img src='/ImagePreview/ListProduct2.png' width='300' height='600'>
+
+### Payment Screen
+<img src='/ImagePreview/Payment.png' width='300' height='600'>
+
+### Manage Order Screen
+<img src='/ImagePreview/WaitingOrder.png' width='300' height='600'> <img src='/ImagePreview/SuccessOrder.png' width='300' height='600'> <img src='/ImagePreview/CancelOrder.png' width='300' height='600'>
+
+### Map Screen
+<img src='/ImagePreview/Map.png' width='300' height='600'>
+
+### Add, Edit Category
+<img src='/ImagePreview/AddCategory.png' width='300' height='600'> <img src='/ImagePreview/EditCategory.png' width='300' height='600'>
+
+### Add, Edit Product
+<img src='/ImagePreview/AddProduct.png' width='300' height='600'> <img src='/ImagePreview/EditProduct.png' width='300' height='600'>
+
 # Getting Started
 
 ## Step 1: Install node module
