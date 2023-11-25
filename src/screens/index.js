@@ -18,6 +18,7 @@ import WaitingOrderScreen from "./order_admin/WaitingOrderScreen";
 import SuccessOrderScreen from "./order_admin/SuccessOrderScreen";
 import CancelOrderScreen from "./order_admin/CancelOrderScreen";
 import DetailOrder from "./order_admin/DetailOrder";
+import Statistics from "./statistics/Statistics";
 
 export {
     LoginScreen,
@@ -40,5 +41,6 @@ export {
     SuccessOrderScreen,
     CancelOrderScreen,
     DetailOrder,
+    Statistics,
     
 }

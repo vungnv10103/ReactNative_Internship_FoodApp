@@ -149,7 +149,9 @@ export default function PaymentScreen(props: any) {
         let phut = dateTime.getMinutes();
         let giay = dateTime.getSeconds();
         let miliGiay = dateTime.getMilliseconds();
-        let date = `${ngay}/${thang}/${nam}`
+        let day = dateTime.getDay();
+        const daysOfWeek = ['CN', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7'];
+        let date = `${daysOfWeek[day]}-${ngay}/${thang}/${nam}`
         let time = `${gio}:${phut}:${giay}.${miliGiay}`
         return `${date}-${time}`
     }

@@ -109,7 +109,12 @@ export default function DetailProductByID(props: any) {
 
     const getNewPrice = (oldPrice: number, discount: number, isFormat: boolean) => {
         const newPrice = oldPrice - (oldPrice * discount / 100)
-        return formatMoney(newPrice)
+        if (isFormat) {
+            return formatMoney(newPrice)
+        }
+        else {
+            return newPrice
+        }
     }
     const formatMoney = (price: number) => {
         if (price >= 1000) {
@@ -148,7 +153,9 @@ export default function DetailProductByID(props: any) {
         let phut = dateTime.getMinutes();
         let giay = dateTime.getSeconds();
         let miliGiay = dateTime.getMilliseconds();
-        let date = `${ngay}/${thang}/${nam}`
+        let day = dateTime.getDay();
+        const daysOfWeek = ['CN', 'Th2', 'Th3', 'Th4', 'Th5', 'Th6', 'Th7'];
+        let date = `${daysOfWeek[day]}-${ngay}/${thang}/${nam}`
         let time = `${gio}:${phut}:${giay}.${miliGiay}`
         return `${date}-${time}`
     }

@@ -229,30 +229,32 @@ export default function AccountScreen(props: any) {
                             onPress={() => props.navigation.navigate('ManageOrderAdmin')}>
                             <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí đơn hàng</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => props.navigation.navigate('Statistics')}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Thống kê doanh thu</Text>
+                        </TouchableOpacity>
                     </View>
                 ) : (
                     <View>
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => props.navigation.navigate('ManageAccount')}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí tài khoản</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                            onPress={() => props.navigation.navigate('ManageOrderAdmin')}>
+                            <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí đơn hàng</Text>
+                        </TouchableOpacity>
                     </View>
                 )
                 }
 
-                {/*  */}
-                {!isAdmin && <View>
-                    <TouchableOpacity
-                        className="w-full bg-sky-400 p-3 rounded-xl mb-3"
-                        onPress={() => props.navigation.navigate('ManageAccount')}>
-                        <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí tài khoản</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        className="w-full bg-sky-400 p-3 rounded-xl mb-3"
-                        onPress={() => props.navigation.navigate('ManageOrderAdmin')}>
-                        <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Quản lí đơn hàng</Text>
-                    </TouchableOpacity>
-                </View>}
-
+                <View></View>
                 {/* Logout */}
                 <TouchableOpacity
-                    className="w-full bg-sky-400 p-3 rounded-xl mb-3"
+                    className="w-full bg-sky-400 p-3 rounded-xl mb-3 bottom-0"
                     onPress={logout}>
                     <Text style={{ fontFamily: 'Inter-Bold' }} className="text-xl text-white text-center">Đăng xuất</Text>
                 </TouchableOpacity>

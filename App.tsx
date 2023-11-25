@@ -22,7 +22,8 @@ import {
   WaitingOrderScreen,
   SuccessOrderScreen,
   CancelOrderScreen,
-  DetailOrder
+  DetailOrder,
+  Statistics
 } from './src/screens/index'
 
 import { CartProvider } from './src/screens/CartProvider';
@@ -53,6 +54,7 @@ export default function App() {
               <Stack.Screen name='SuccessOrder' component={SuccessOrderScreen} options={{ headerShown: false }} />
               <Stack.Screen name='CancelOrder' component={CancelOrderScreen} options={{ headerShown: false }} />
               <Stack.Screen name='DetailOrder' component={DetailOrder} options={{ headerShown: false }} />
+              <Stack.Screen name='Statistics' component={Statistics} options={{ headerShown: true, title: 'Thống kê doanh thu' }} />
               <Stack.Screen name='Cart' component={CartScreen} options={{ headerShown: false }} />
               <Stack.Screen name='Payment' component={PaymentScreen} options={{ headerShown: false }} />
               <Stack.Screen name='Chat' component={ChatScreen} options={{ headerShown: false }} />

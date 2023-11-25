@@ -1,5 +1,125 @@
 # FoodApp Delivery
 
+## Document
+
+I. GIỚI THIỆU
+
+    - FoodYum là 1 ứng dụng mua đồ ăn nhanh online, cho phép người dùng đặt đồ ăn trực tuyến từ cửa nhà hàng. Người dùng có thể duyệt menu, chọn món, thêm vào giỏ hàng và thanh toán qua ứng dụng.
+
+    - FoodYum được xây dựng trên Visual Studio Code sử dụng framework React Native với ngôn ngữ Javascript và Typescript, dữ liệu của
+      app được lưu trên FireBase.
+   
+    - Các chức năng của người dùng :
+        + Bao gồm các chức năng như đăng nhập, đăng ký, quản lý thông tin cá nhân, mua, đặt hàng,
+          thanh toán, quản lí hoá đơn, chat bot để biết thêm chi tiết sản phẩm.
+          
+        + Thông tin chi tiết sản phẩm, chương trình ưu đãi, blog giới thiệu các sản phẩm.
+        
+    - Các chức năng của quản trị viên :
+        + Bao gồm các chức năng như đăng nhập, 
+        
+        +  Quản lý tài khoản và phân quyền sử dụng.
+        
+        +  Quản lý sản phẩm và các danh mục sản phẩm.
+        
+        +  Quản lý đơn hàng
+        
+        +  Báo cáo thống kê doanh thu, doanh số theo thời gian.
+    
+
+
+II. CHI TIẾT CÁC CHỨC NĂNG CHÍNH 
+
+    1. Đăng nhập: Người dùng và người quản trị đều cần có chức năng đăng nhập để truy cập vào ứng dụng.   
+    
+    2. Đăng ký: Người dùng có thể đăng ký tài khoản mới để sử dụng ứng dụng.
+    
+    3. Quản lý thông tin cá nhân: Người dùng có thể thay đổi thông tin cá nhân của mình
+       (tên, địa chỉ, số điện thoại, email, hình ảnh đại diện, mật khẩu, v.v.).
+    
+    4. Mua hàng: Người dùng có thể xem danh sách sản phẩm, chọn mua và thêm vào giỏ hàng.
+    
+    5. Đặt hàng: Người dùng có thể xem giỏ hàng, chỉnh sửa số lượng và đặt hàng.
+    
+    6. Thanh toán: Người dùng có thể chọn phương thức thanh toán và thực hiện thanh toán cho đơn hàng.
+    
+    7. Chat bot: Người dùng có thể trò chuyện với chat bot để biết thêm chi tiết về sản phẩm.
+    
+    8. Xem thông tin chi tiết sản phẩm: Người dùng có thể xem thông tin chi tiết về từng sản phẩm
+       (mô tả, giá, ảnh, v.v.).
+    
+    9. Xem chương trình ưu đãi: Người dùng có thể xem các chương trình ưu đãi đang diễn ra
+       và áp dụng cho đơn hàng của mình.
+    
+    10. Xem blog giới thiệu sản phẩm: Người dùng có thể xem các bài viết blog giới thiệu về các sản phẩm.
+    
+    11. Quản lý tài khoản: Người quản trị có thể quản lý tài khoản người dùng (thêm, sửa, xóa).
+    
+    12. Phân quyền sử dụng: Người quản trị có thể phân quyền sử dụng cho các tài khoản người dùng.
+    
+    13. Quản lý sản phẩm: Người quản trị có thể quản lý danh sách sản phẩm (thêm, sửa, xóa).
+    
+    14. Quản lý danh mục sản phẩm: Người quản trị có thể quản lý danh mục sản phẩm (thêm, sửa, xóa).
+    
+    15. Quản lý đơn hàng: Người quản trị có thể xem danh sách đơn hàng, xem chi tiết từng đơn hàng,
+        cập nhật trạng thái đơn hàng.
+    
+    16. Báo cáo thống kê doanh thu: Người quản trị có thể xem báo cáo thống kê doanh thu theo thời gian
+        (ngày, tháng).
+
+III. CẤU TRÚC DỮ LIỆU
+   
+         1. Bảng "Users" (Người dùng):
+           - id
+           - username
+           - password
+           - name
+           - address
+           - phone
+           - email
+           - avatar
+
+         2. Bảng "Categories" (Danh mục sản phẩm):
+           - id
+           - name
+           - img
+        
+         3. Bảng "Products" (Sản phẩm):
+           - id 
+           - idCategory
+           - idSeller
+           - name
+           - description
+           - img
+           - price
+           - sold
+           - discount
+           - status
+
+         4. Bảng "Carts" (Giỏ hàng):
+           - id
+           - idUser
+           - idSeller
+           - quantity
+           - datetime
+           - status
+     
+         5. Bảng "Orders" (Đơn hàng):
+           - id
+           - idUser
+           - idSeller
+           - quantity
+           - datetime
+           - status
+
+          6. Bảng "Messages" (Tin nhắn):
+           - id
+           - idSender
+           - idReceiver
+           - message
+           - datetime
+           - status
+
 ## Preview
 
 ### Signup, Login Screen
@@ -20,6 +140,9 @@
 ### Manage Order Screen
 <img src='/ImagePreview/WaitingOrder.png' width='300' height='600'> <img src='/ImagePreview/SuccessOrder.png' width='300' height='600'> <img src='/ImagePreview/CancelOrder.png' width='300' height='600'>
 
+### Statistics Screen
+<img src='/ImagePreview/Statistics1.jpg' width='300' height='600'> <img src='/ImagePreview/Statistics2.jpg' width='300' height='600'> <img src='/ImagePreview/Statistics3.jpg' width='300' height='600'>
+
 ### Map Screen
 <img src='/ImagePreview/Map.png' width='300' height='600'>
 
@@ -30,6 +153,13 @@
 <img src='/ImagePreview/AddProduct.png' width='300' height='600'> <img src='/ImagePreview/EditProduct.png' width='300' height='600'>
 
 # Getting Started
+
+## First
+```base
+git clone https://github.com/vungnv10103/ReactNative_Internship_FoodApp.git
+cd .\ReactNative_Internship_FoodApp\
+
+```
 
 ## Step 1: Install node module
 
