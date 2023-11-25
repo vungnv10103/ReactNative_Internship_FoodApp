@@ -4,14 +4,16 @@
 
 I. GIỚI THIỆU
 
-    - FoodYum là 1 ứng dụng mua đồ ăn nhanh online, cho phép người dùng đặt đồ ăn trực tuyến từ cửa nhà hàng. Người dùng có thể duyệt menu, chọn món, thêm vào giỏ hàng và thanh toán qua ứng dụng.
+    - FoodYum là 1 ứng dụng mua đồ ăn nhanh online, cho phép người dùng đặt đồ ăn trực tuyến từ cửa nhà hàng.
+        Người dùng có thể duyệt menu, chọn món, thêm vào giỏ hàng và thanh toán qua ứng dụng.
 
-    - FoodYum được xây dựng trên Visual Studio Code sử dụng framework React Native với ngôn ngữ Javascript và Typescript, dữ liệu của
-      app được lưu trên FireBase.
+    - FoodYum được xây dựng trên Visual Studio Code sử dụng framework React Native 
+        với ngôn ngữ Javascript và Typescript, dữ liệu của app được lưu trên FireBase(Realtime Database)
    
     - Các chức năng của người dùng :
-        + Bao gồm các chức năng như đăng nhập, đăng ký, quản lý thông tin cá nhân, mua, đặt hàng,
-          thanh toán, quản lí hoá đơn, chat bot để biết thêm chi tiết sản phẩm.
+        + Bao gồm các chức năng như đăng nhập, đăng ký, quản lý thông tin cá nhân (Firebase Authentication)
+          
+        + Mua, đặt hàng, thanh toán, quản lí hoá đơn, chat bot để biết thêm chi tiết sản phẩm.
           
         + Thông tin chi tiết sản phẩm, chương trình ưu đãi, blog giới thiệu các sản phẩm.
         
